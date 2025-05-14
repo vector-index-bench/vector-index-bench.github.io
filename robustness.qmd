@@ -1,0 +1,171 @@
+---
+echo: false
+---
+
+This page allows to select, for each dataset, a recall threshold.
+Then, for each algorithm, the fastest configuration achieving an average recall
+larger than the threshold is automatically selected.
+
+We then consider two groups of queries:
+
+- the 100 queries with smallest _relative contrast_, deemed _difficult_
+- the 100 queries with largest _relative contrast_, deemed _easy_
+
+The plot below report the average recall attained by each algorithm
+on both groups, under the aforementioned configuration.
+
+```{ojs}
+db = DuckDBClient.of({
+  stats: FileAttachment("results/stats.parquet"),
+  summary: FileAttachment("results/summary.parquet"),
+  basics: {file: FileAttachment("dataset_basics.csv"), header: true},
+  gpu_algorithms: {file: FileAttachment("gpu_algorithms.csv"), header: true}
+})
+
+datasets = db.sql`select distinct dataset from summary order by all`
+```
+
+```{ojs}
+viewof selected_dataset = Inputs.select(datasets.map(d => d.dataset))
+k_value = 100
+viewof recall_threshold = Inputs.range([0,1], {step: 0.01, value: 0.9, label: "minimum recall"});
+```
+
+```{ojs}
+focus_url = `${window.location.origin}${window.location.pathname.slice(0, -"robustness.html".length)}results/${selected_dataset}__detail.parquet`;
+```
+
+```{ojs}
+stats = db.sql`
+WITH
+  query_ranks AS (
+    select 
+      query_index, 
+      rc100, 
+      rank() over (order by rc100) as query_rank,
+    from stats where dataset = ${selected_dataset}),
+  query_type AS (
+    select
+      query_index,
+      rc100,
+      case when query_rank < 100 then 'difficult' when query_rank >= 900 then 'easy' end as query_type
+    from query_ranks
+  )
+SELECT * from query_type where query_type in ('difficult', 'easy')
+`
+```
+
+```{ojs}
+selected = db.query(`
+  with
+    normalized_names as (
+      select k, regexp_replace(dataset, '-(a2|e2)-', '-') as dataset, algorithm, params, avg_time, qps, recall from summary
+    ),
+    filtered_summary as (
+      select * from normalized_names natural left join gpu_algorithms
+    ),
+    ranked as (
+        select *, row_number() over (partition by algorithm, dataset order by qps desc) as rank
+        from filtered_summary
+        where recall >= ?3 and k = ?2
+          and dataset = ?1 
+    ),
+    params as (
+      select algorithm, params from ranked where rank = 1
+    ),
+    query_ranks AS (
+      select 
+        query_index, 
+        rc100, 
+        rank() over (order by rc100) as query_rank,
+      from stats where dataset = ?1),
+    query_type AS (
+      select
+        query_index,
+        rc100,
+        case when query_rank < 100 then 'difficult' when query_rank >= 900 then 'easy' end as query_type
+      from query_ranks
+    ),
+    query_perf AS (
+      select * from '${focus_url}' natural join params where dataset = ?1 and k = ?2
+    )
+    select algorithm, query_type, avg(recall) as recall
+    from query_perf natural join query_type
+    where query_type in ('difficult', 'easy')
+    group by all
+`, [selected_dataset, k_value, recall_threshold])
+
+```
+
+```{ojs}
+Plot.plot({
+  width: width,
+  style: {
+    fontSize: "13pt"
+  },
+  axis: null,
+  marginRight: 200,
+  marginLeft: 60,
+  marks: [
+    Plot.ruleX([recall_threshold], {stroke: "lightgray"}),
+    Plot.link(selected, Plot.groupY(
+      {
+        x1: (D) => d3.min(D),
+        x2: (D) => d3.max(D)
+      },
+      {
+        y: "algorithm",
+        x1: "recall",
+        x2: "recall"
+      }
+    )),
+    Plot.dot(selected, {
+      x: "recall", 
+      y: "algorithm", 
+      fill: "query_type",
+      r: 5,
+      sort: {y: "-x"}
+    }),
+    Plot.text(selected, Plot.groupY(
+      {
+        x: D => d3.max(D),
+        text: D => D[0],
+      },
+      {
+        y: "algorithm",
+        x: "recall",
+        text: "algorithm",
+        dx: 70,
+        textAnchor: "start",
+        lineAnchor: "middle"
+      }
+    )),
+    Plot.text(selected, Plot.groupY(
+      {
+        x: D => d3.min(D),
+        text: D => d3.format(".3f")(d3.min(D)),
+      },
+      {
+        y: "algorithm",
+        x: "recall",
+        text: "recall",
+        dx: -10,
+        textAnchor: "end"
+      }
+    )),
+    Plot.text(selected, Plot.groupY(
+      {
+        x: D => d3.max(D),
+        text: D => d3.format(".3f")(d3.max(D)),
+      },
+      {
+        y: "algorithm",
+        x: "recall",
+        text: "recall",
+        dx: 10,
+        textAnchor: "start"
+      }
+    )),
+  ]
+})
+```

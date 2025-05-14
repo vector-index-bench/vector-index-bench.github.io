@@ -95,6 +95,7 @@ d3.select("#legend")
 
 ```{ojs}
 //| title: Algorithms
+viewof include_gpu = Inputs.toggle({label: "Include GPU", value: false})
 html`
 <p>Select up to ${ncolors} algorithms to highlight them in the plot.</p>
 <div id="legend" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4pt;">

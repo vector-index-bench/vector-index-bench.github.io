@@ -25,3 +25,5 @@ In particular, head over to
   and query throughput of different index data structures
 - the [algorithm focus](/algorithm_focus.html) page to see the performance of
   _all_ the configurations we tested for each algorithm.
+- the [robustness](/robustness.html) page allows to investigate the robustness of algorithms
+  with respect to the query difficulty.

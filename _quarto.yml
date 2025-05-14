@@ -17,6 +17,8 @@ website:
         href: tradeoff.qmd
       - text: "Algorithm focus"
         href: algorithm_focus.qmd
+      - text: "Robustness"
+        href: robustness.qmd
     right:
       - href: https://github.com/vector-index-bench/vibe
         icon: github
