@@ -23,9 +23,9 @@ db = DuckDBClient.of({
   basics: {file: FileAttachment("dataset_basics.csv"), header: true},
   info: FileAttachment("results/data-info.parquet")
 });
-id_datasets = db.sql`select * from basics natural join info where type = 'in-distribution' order by dataset`;
+id_datasets = db.sql`select * from basics natural join info where type in ('in-distribution', 'in-distribution-additional') order by dataset`;
 ood_datasets = db.sql`select * from basics natural join info where type = 'out-of-distribution' order by dataset`;
-datasets = db.sql`select * from basics natural join info where type in ('in-distribution', 'out-of-distribution') order by type, dataset`;
+datasets = db.sql`select * from basics natural join info where type in ('in-distribution', 'in-distribution-additional', 'out-of-distribution') order by type, dataset`;
 
 colors = Array.from(d3["schemeTableau10"]).toReversed();
 ```
@@ -34,6 +34,7 @@ colors = Array.from(d3["schemeTableau10"]).toReversed();
 //| height: 10
 type_colors = new Map([
   ["in-distribution", "#1f77b4"],
+  ["in-distribution-additional", "#1f77b4"],
   ["out-of-distribution", "#ff7f0e"]
 ])
 

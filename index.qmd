@@ -1,5 +1,19 @@
 ---
+title: "VIBE: Vector Index Benchmark for Embeddings"
+author:
+  - name: Elias Jääsaari
+    affiliation: University of Helsinki
+  - name: Ville Hyvönen
+    affiliation: Aalto University
+  - name: Matteo Ceccarello
+    affiliation: University of Padova
+  - name: Teemu Roos
+    affiliation: University of Helsinki
+  - name: Martin Aumüller
+    affiliation: IT University of Copenhagen
 ---
+
+----------
 
 This website hosts the results of VIBE, the Vector Index Benchmark for Embeddings.
 You can use its interactive plots to explore the results of the benchmark.
