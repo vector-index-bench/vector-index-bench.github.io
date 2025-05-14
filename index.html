@@ -6,6 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Elias Jääsaari">
+<meta name="author" content="Ville Hyvönen">
+<meta name="author" content="Matteo Ceccarello">
+<meta name="author" content="Teemu Roos">
+<meta name="author" content="Martin Aumüller">
 
 <title>VIBE: Vector Index Benchmark for Embeddings</title>
 <style>
@@ -106,6 +111,17 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="./algorithm_focus.html"> 
 <span class="menu-text">Algorithm focus</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./robustness.html"> 
+<span class="menu-text">Robustness</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/vector-index-bench/vibe"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -119,17 +135,80 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">VIBE: Vector Index Benchmark for Embeddings</h1>
+</div>
 
 
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliations</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Elias Jääsaari </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Helsinki
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Ville Hyvönen </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Aalto University
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Matteo Ceccarello </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Padova
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Teemu Roos </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            University of Helsinki
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Martin Aumüller </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            IT University of Copenhagen
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
 
 
+</header>
+
+
+<hr>
 <p>This website hosts the results of VIBE, the Vector Index Benchmark for Embeddings. You can use its interactive plots to explore the results of the benchmark. In particular, head over to</p>
 <ul>
 <li>the <a href="./overview.html">overview</a> page to compare all the algorithms across all datasets at a glance</li>
 <li>the <a href="./datasets.html">datasets</a> page for detailed information about all the datasets we consider</li>
 <li>the <a href="./tradeoff.html">tradeoffs</a> page to explore the tradeoff between recall and query throughput of different index data structures</li>
 <li>the <a href="./algorithm_focus.html">algorithm focus</a> page to see the performance of <em>all</em> the configurations we tested for each algorithm.</li>
+<li>the <a href="./robustness.html">robustness</a> page allows to investigate the robustness of algorithms with respect to the query difficulty.</li>
 </ul>
 
 
