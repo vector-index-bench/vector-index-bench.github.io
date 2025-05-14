@@ -10,9 +10,7 @@ script in the main repository.
 
 Then, to deploy the updated website, just run the command
 
-    just deploy
-
-If you don't want to install the [`just`](https://just.systems/) task runner, simply run the commands you can find in the `Justfile` one after the other.
+    bash ./deploy.sh
 
 ## Software requirements
 
