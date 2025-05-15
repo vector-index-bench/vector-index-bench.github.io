@@ -8,8 +8,12 @@ larger than the threshold is automatically selected.
 
 We then consider two groups of queries:
 
-- the 100 queries with smallest _relative contrast_, deemed _difficult_
-- the 100 queries with largest _relative contrast_, deemed _easy_
+- the 100 queries with smallest _relative contrast_, deemed
+  <span style="text-decoration: underline; text-decoration-thickness: .15em; text-decoration-color: #4e79a7">
+  difficult</span>
+- the 100 queries with largest _relative contrast_, deemed 
+  <span style="text-decoration: underline; text-decoration-thickness: .15em; text-decoration-color: #f28e2c">
+  easy </span>
 
 The plot below report the average recall attained by each algorithm
 on both groups, under the aforementioned configuration.
