@@ -26,7 +26,7 @@ db = DuckDBClient.of({
   algorithm_basics: {file: FileAttachment("algorithms_basics.csv"), header: true}
 })
 
-datasets = db.sql`select distinct dataset from summary order by all`
+datasets = db.sql`select distinct dataset from summary where dataset not like '%-id-%' order by all;`
 ```
 
 ```{ojs}

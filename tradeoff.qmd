@@ -28,7 +28,7 @@ algorithms = db.sql`
 	where (not is_gpu or ${include_gpu})
 	order by all;
 `
-datasets = db.sql`select distinct dataset from summary;`
+datasets = db.sql`select distinct dataset from summary where dataset not like '%-id-%';`
 
 colors = Array.from(d3["schemeTableau10"]).toReversed();
 ncolors = colors.length;

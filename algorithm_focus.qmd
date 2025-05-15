@@ -20,7 +20,7 @@ db = DuckDBClient.of({
 });
 alldata = db.sql`select * from summary;`
 algorithms = db.sql`select distinct algorithm from summary;`
-datasets = db.sql`select distinct dataset from summary;`
+datasets = db.sql`select distinct dataset from summary where dataset not like '%-id-%';`
 
 colors = Array.from(d3["schemeTableau10"]).toReversed();
 ncolors = colors.length;
