@@ -40,7 +40,7 @@ type_colors = new Map([
 
 viewof selected_dataset = Inputs.table(datasets,{
   format: {
-    dataset: dataset => html`<a href="https://huggingface.co/datasets/ejaasaari/annbench/blob/main/${dataset}.hdf5">${dataset}</a>`,
+    dataset: dataset => html`<a href="https://huggingface.co/datasets/vector-index-bench/vibe/blob/main/${dataset}.hdf5">${dataset}</a>`,
     type: t => html`<div style="
       width: 3ex;
       height: 3ex;
