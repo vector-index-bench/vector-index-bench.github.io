@@ -1,6 +1,0 @@
-algorithm,is_gpu
-cuvs-cagra,true
-ggnn,true
-faiss-gpu-ivf,true
-cuvs-ivfpq,true
-cuvs-ivf,true
