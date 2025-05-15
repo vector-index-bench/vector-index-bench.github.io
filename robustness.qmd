@@ -23,7 +23,7 @@ db = DuckDBClient.of({
   stats: FileAttachment("results/stats.parquet"),
   summary: FileAttachment("results/summary.parquet"),
   basics: {file: FileAttachment("dataset_basics.csv"), header: true},
-  gpu_algorithms: {file: FileAttachment("gpu_algorithms.csv"), header: true}
+  algorithm_basics: {file: FileAttachment("algorithms_basics.csv"), header: true}
 })
 
 datasets = db.sql`select distinct dataset from summary order by all`
@@ -66,7 +66,7 @@ selected = db.query(`
       select k, regexp_replace(dataset, '-(a2|e2)-', '-') as dataset, algorithm, params, avg_time, qps, recall from summary
     ),
     filtered_summary as (
-      select * from normalized_names natural left join gpu_algorithms
+      select * from normalized_names natural left join algorithm_basics
     ),
     ranked as (
         select *, row_number() over (partition by algorithm, dataset order by qps desc) as rank
