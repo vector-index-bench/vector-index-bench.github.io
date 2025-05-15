@@ -19,10 +19,15 @@ the ranking of the algorithms at the recall highlighted by the red line.
 //| output: false
 db = DuckDBClient.of({
 	summary: FileAttachment("results/summary.parquet"),
-  gpu_algorithms: {file: FileAttachment("gpu_algorithms.csv"), header: true}
+  algorithm_basics: {file: FileAttachment("algorithms_basics.csv"), header: true}
 });
 alldata = db.sql`select * from summary;`
-algorithms = db.sql`select distinct algorithm from summary order by all;`
+algorithms = db.sql`
+	select distinct algorithm
+	from summary natural join algorithm_basics
+	where (not is_gpu or ${include_gpu})
+	order by all;
+`
 datasets = db.sql`select distinct dataset from summary;`
 
 colors = Array.from(d3["schemeTableau10"]).toReversed();
@@ -96,6 +101,7 @@ d3.select("#legend")
 ```{ojs}
 //| title: Algorithms
 viewof include_gpu = Inputs.toggle({label: "Include GPU", value: false})
+
 html`
 <p>Select up to ${ncolors} algorithms to highlight them in the plot.</p>
 <div id="legend" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4pt;">
@@ -112,8 +118,8 @@ html`
 pareto = db.sql`WITH
 filtered_summary AS (
 	SELECT *
-	FROM summary natural left join gpu_algorithms
-	WHERE is_gpu is NULL -- TODO: make a toggle to select the GPU algorithms
+	FROM summary natural left join algorithm_basics
+	WHERE (NOT is_gpu or ${include_gpu})
 ),
 ranked_points AS (
 	SELECT
@@ -176,10 +182,10 @@ viewof paretoplot = Plot.plot({
 dynamic_recall_threshold = (paretoplot)? paretoplot.recall : null;
 rankdata = db.sql`
 	SELECT dataset, algorithm, k, max(qps) as qps
-	FROM summary natural left join gpu_algorithms
+	FROM summary natural left join algorithm_basics
 	WHERE recall > ${dynamic_recall_threshold}
 	AND dataset = ${selected_dataset}
-	AND is_gpu is NULL
+	AND (not is_gpu or ${include_gpu}) 
 	GROUP BY dataset, algorithm, k
 `
 half = d3.max(rankdata, d => d.qps) / 2

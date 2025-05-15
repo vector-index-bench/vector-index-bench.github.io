@@ -9,7 +9,7 @@ db = DuckDBClient.of({
   summary: FileAttachment("results/summary.parquet"),
   stats: FileAttachment("results/stats.parquet"),
   basics: {file: FileAttachment("dataset_basics.csv"), header: true},
-  gpu_algorithms: {file: FileAttachment("gpu_algorithms.csv"), header: true}
+  algorithm_basics: {file: FileAttachment("algorithms_basics.csv"), header: true}
 });
 k_values = db.sql`select distinct k from summary;`
 viewof recall_threshold = Inputs.range([0,1], {step: 0.01, value: 0.9, label: "minimum recall"});
@@ -26,8 +26,8 @@ fastdata = db.sql`
     ),
     selected_datasets as (select dataset, type from basics where type in ('in-distribution', 'out-of-distribution') ),
     filtered_summary as (
-      select * from normalized_names natural join selected_datasets natural left join gpu_algorithms
-      where is_gpu is null -- TODO: make a toggle to select GPU algorithms if we want them
+      select * from normalized_names natural join selected_datasets natural left join algorithm_basics
+      where not is_gpu 
     ),
     all_datasets as ( select distinct dataset, type from filtered_summary ),
     all_algorithms as ( select distinct algorithm from filtered_summary ),
