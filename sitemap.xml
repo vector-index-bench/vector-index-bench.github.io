@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vector-index-bench.github.io/datasets.html</loc>
-    <lastmod>2025-05-14T17:22:17.200Z</lastmod>
+    <lastmod>2025-05-15T11:45:25.145Z</lastmod>
   </url>
   <url>
     <loc>https://vector-index-bench.github.io/overview.html</loc>
@@ -10,11 +10,11 @@
   </url>
   <url>
     <loc>https://vector-index-bench.github.io/algorithm_focus.html</loc>
-    <lastmod>2025-05-14T15:18:26.289Z</lastmod>
+    <lastmod>2025-05-15T11:50:57.833Z</lastmod>
   </url>
   <url>
     <loc>https://vector-index-bench.github.io/robustness.html</loc>
-    <lastmod>2025-05-15T08:54:07.526Z</lastmod>
+    <lastmod>2025-05-15T11:51:46.767Z</lastmod>
   </url>
   <url>
     <loc>https://vector-index-bench.github.io/index.html</loc>
@@ -22,6 +22,6 @@
   </url>
   <url>
     <loc>https://vector-index-bench.github.io/tradeoff.html</loc>
-    <lastmod>2025-05-15T08:25:19.385Z</lastmod>
+    <lastmod>2025-05-15T11:49:47.189Z</lastmod>
   </url>
 </urlset>
