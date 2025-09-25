@@ -9,6 +9,7 @@ flatnav,false
 ggnn,true
 glass,false
 hnswlib,false
+hnsw(faiss),false
 ivf(faiss),false
 ivfpqfs(faiss),false
 lorann,false
