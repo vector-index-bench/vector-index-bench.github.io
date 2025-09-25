@@ -63,7 +63,7 @@ SELECT * from query_type where query_type in ('difficult', 'easy')
 selected = db.query(`
   with
     normalized_names as (
-      select k, regexp_replace(dataset, '-(a2|e2)-', '-') as dataset, algorithm, params, avg_time, qps, recall from summary
+      select k, dataset, algorithm, params, qps, recall from summary
     ),
     filtered_summary as (
       select * from normalized_names natural left join algorithm_basics

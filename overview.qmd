@@ -22,7 +22,7 @@ viewof k_value = Inputs.select(k_values.map(d => d.k), {value: 10, label: "value
 fastdata = db.sql`
   with
     normalized_names as (
-      select k, regexp_replace(dataset, '-(a2|e2)-', '-') as dataset, algorithm, params, avg_time, qps, recall from summary
+      select k, dataset, algorithm, params, qps, recall from summary
     ),
     selected_datasets as (select dataset, type from basics where type in ('in-distribution', 'out-of-distribution') ),
     filtered_summary as (
