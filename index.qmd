@@ -21,9 +21,8 @@ In particular, head over to
 
 - the [overview](/overview.html) page to compare all the algorithms across all datasets at a glance
 - the [datasets](/datasets.html) page for detailed information about all the datasets we consider
-- the [tradeoffs](/tradeoff.html) page to explore the tradeoff between recall
-  and query throughput of different index data structures
+- the [tradeoffs](/tradeoff.html) page to explore the tradeoff between recall and query throughput
 - the [algorithm focus](/algorithm_focus.html) page to see the performance of
-  _all_ the configurations we tested for each algorithm.
-- the [robustness](/robustness.html) page allows to investigate the robustness of algorithms
-  with respect to the query difficulty.
+  _all_ the configurations we tested for each algorithm
+- the [robustness](/robustness.html) page to investigate the robustness of algorithms
+  with respect to the query difficulty
