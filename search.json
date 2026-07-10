@@ -25,7 +25,7 @@
     "href": "index.html",
     "title": "VIBE: Vector Index Benchmark for Embeddings",
     "section": "",
-    "text": "This website hosts the results of VIBE, the Vector Index Benchmark for Embeddings. You can use its interactive plots to explore the results of the benchmark. In particular, head over to\n\nthe overview page to compare all the algorithms across all datasets at a glance\nthe datasets page for detailed information about all the datasets we consider\nthe tradeoffs page to explore the tradeoff between recall and query throughput\nthe algorithm focus page to see the performance of all the configurations we tested for each algorithm\nthe robustness page to investigate the robustness of algorithms with respect to the query difficulty"
+    "text": "This website hosts the results of VIBE, the Vector Index Benchmark for Embeddings. You can use its interactive plots to explore the results of the benchmark. In particular, head over to\n\nthe overview page to compare all the algorithms across all datasets at a glance\nthe datasets page for detailed information about all the datasets we consider\nthe tradeoffs page to explore the tradeoff between recall and query throughput\nthe algorithm focus page to see the performance of all the configurations we tested for each algorithm\nthe robustness page to investigate the robustness of algorithms with respect to the query difficulty\n\nIf you find our work useful, please cite the following paper: &gt; E. Jääsaari, V. Hyvönen, M. Ceccarello, T. Roos, M. Aumüller. VIBE: Vector Index Benchmark for Embeddings. arXiv preprint arXiv:2505.17810, 2025."
   },
   {
     "objectID": "robustness.html",

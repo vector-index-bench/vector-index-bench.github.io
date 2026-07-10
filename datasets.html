@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.24">
+<meta name="generator" content="quarto-1.7.22">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -67,15 +67,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b4406b7675125bc2ba204020e191172.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-f59cc608e70ce16b384b3e6fc30ca698.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-bee021b7fa6675b3922fc48f25f0dbb8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -120,7 +119,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+      if (mathElements[i].tagName == "SPAN") {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -145,8 +144,6 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">VIBE: Vector Index Benchmark for Embeddings</span>
     </a>
@@ -208,7 +205,7 @@ window.Quarto = {
 <p>In the VIBE benchmark we consider datasets whose queries are both <span style="text-decoration: underline; text-decoration-thickness: .1em; text-decoration-color: #1f77b4"> in-distribution </span> and <span style="text-decoration: underline; text-decoration-thickness: .1em; text-decoration-color: #ff7f0e"> out-of-distribution</span>.</p>
 <p>The following table reports information about the size and dimensionality of each dataset, along with links that allow to download them.</p>
 <div class="cell hidden">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb1" data-startfrom="20" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 19;"><span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> DuckDBClient<span class="op">.</span><span class="fu">of</span>({</span>
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="20" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 19;"><span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> DuckDBClient<span class="op">.</span><span class="fu">of</span>({</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="dt">vizdata</span><span class="op">:</span> <span class="fu">FileAttachment</span>(<span class="st">"results/data-pca-mahalanobis.parquet"</span>)<span class="op">,</span></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="dt">stats</span><span class="op">:</span> <span class="fu">FileAttachment</span>(<span class="st">"results/stats.parquet"</span>)<span class="op">,</span></span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="dt">basics</span><span class="op">:</span> {<span class="dt">file</span><span class="op">:</span> <span class="fu">FileAttachment</span>(<span class="st">"dataset_basics.csv"</span>)<span class="op">,</span> <span class="dt">header</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
@@ -218,7 +215,7 @@ window.Quarto = {
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>ood_datasets <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`select * from basics natural join info where type = 'out-of-distribution' order by dataset`</span><span class="op">;</span></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`select * from basics natural join info where type in ('in-distribution', 'in-distribution-additional', 'out-of-distribution') order by type, dataset`</span><span class="op">;</span></span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>(d3[<span class="st">"schemeTableau10"</span>])<span class="op">.</span><span class="fu">toReversed</span>()<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>(d3[<span class="st">"schemeTableau10"</span>])<span class="op">.</span><span class="fu">toReversed</span>()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display hidden">
 <div>
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -256,7 +253,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="cell" height="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="35" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 34;"><span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>type_colors <span class="op">=</span> <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="35" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 34;"><span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>type_colors <span class="op">=</span> <span class="kw">new</span> <span class="bu">Map</span>([</span>
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"in-distribution"</span><span class="op">,</span> <span class="st">"#1f77b4"</span>]<span class="op">,</span></span>
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"in-distribution-additional"</span><span class="op">,</span> <span class="st">"#1f77b4"</span>]<span class="op">,</span></span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  [<span class="st">"out-of-distribution"</span><span class="op">,</span> <span class="st">"#ff7f0e"</span>]</span>
@@ -276,7 +273,7 @@ window.Quarto = {
 <span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
 <span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="dt">multiple</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
 <span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="dt">value</span><span class="op">:</span> datasets[<span class="dv">0</span>]</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-2-1" data-nodetype="declaration">
@@ -295,14 +292,14 @@ window.Quarto = {
 <p>Here below we report the first two PCA components of <span style="text-decoration: underline; text-decoration-thickness: .1em; text-decoration-color: #1f77b4"> data </span> and <span style="text-decoration: underline; text-decoration-thickness: .1em; text-decoration-color: #ff7f0e"> queries </span> for each dataset. Selecting a dataset in the table above allows to update the visualization.</p>
 <p>Along with the PCA we display the distribution of Mahalanobis distances between the <span style="text-decoration: underline; text-decoration-thickness: .1em; text-decoration-color: #1f77b4"> data points </span> and the data and the <span style="text-decoration: underline; text-decoration-thickness: .1em; text-decoration-color: #ff7f0e"> query points </span> and the data.</p>
 <div class="cell hidden">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb3" data-startfrom="84" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 83;"><span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>selected_data <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`select * from vizdata where dataset = </span><span class="sc">${</span>selected_dataset<span class="op">.</span><span class="at">dataset</span><span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="84" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 83;"><span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>selected_data <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`select * from vizdata where dataset = </span><span class="sc">${</span>selected_dataset<span class="op">.</span><span class="at">dataset</span><span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
 <span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>kde <span class="op">=</span> <span class="pp">require</span>(<span class="st">'fast-kde'</span>)<span class="op">;</span></span>
 <span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>distances_data <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`select mahalanobis_distance_to_data from vizdata where dataset = </span><span class="sc">${</span>selected_dataset<span class="op">.</span><span class="at">dataset</span><span class="sc">}</span><span class="vs"> and part = 'train'`</span><span class="op">;</span></span>
 <span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>density_data <span class="op">=</span> kde<span class="op">.</span><span class="fu">density1d</span>(distances_data<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">mahalanobis_distance_to_data</span>)<span class="op">,</span> { <span class="dt">bandwidth</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span> <span class="dt">bins</span><span class="op">:</span> <span class="dv">512</span><span class="op">,</span> <span class="dt">pad</span><span class="op">:</span> <span class="dv">4</span> })<span class="op">;</span></span>
 <span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>distances_query <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`select mahalanobis_distance_to_data from vizdata where dataset = </span><span class="sc">${</span>selected_dataset<span class="op">.</span><span class="at">dataset</span><span class="sc">}</span><span class="vs"> and part = 'test'`</span><span class="op">;</span></span>
 <span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>density_query <span class="op">=</span> kde<span class="op">.</span><span class="fu">density1d</span>(distances_query<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">mahalanobis_distance_to_data</span>)<span class="op">,</span> { <span class="dt">bandwidth</span><span class="op">:</span> <span class="dv">3</span><span class="op">,</span> <span class="dt">bins</span><span class="op">:</span> <span class="dv">512</span><span class="op">,</span> <span class="dt">pad</span><span class="op">:</span> <span class="dv">4</span> })<span class="op">;</span></span>
 <span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>bw <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>bw <span class="op">=</span> <span class="dv">1</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display hidden">
 <div>
 <div id="ojs-cell-3-1" data-nodetype="declaration">
@@ -353,7 +350,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb4" data-startfrom="97" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 96;"><span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="97" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 96;"><span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
 <span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> width<span class="op">/</span><span class="dv">4</span><span class="op">,</span></span>
 <span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> width<span class="op">/</span><span class="dv">4</span><span class="op">,</span></span>
 <span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>  <span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span></span>
@@ -371,7 +368,7 @@ window.Quarto = {
 <span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">lineY</span>(density_query<span class="op">.</span><span class="fu">bandwidth</span>(bw)<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">'x'</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">'y'</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">'#ff7f0e'</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">'#ff7f0e'</span><span class="op">,</span> <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.5</span> })<span class="op">,</span></span>
 <span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">ruleY</span>([<span class="dv">0</span>])</span>
 <span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell column-page quarto-layout-panel" data-layout-nrow="1">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -387,7 +384,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="cell hidden">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb5" data-startfrom="121" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 120;"><span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>density_transform <span class="op">=</span> <span class="kw">function</span>(data<span class="op">,</span> facets) {</span>
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="121" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 120;"><span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>density_transform <span class="op">=</span> <span class="kw">function</span>(data<span class="op">,</span> facets) {</span>
 <span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Separately compute densities for each facet</span></span>
 <span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> densities <span class="op">=</span> facets<span class="op">.</span><span class="fu">map</span>((facet) <span class="kw">=&gt;</span> {</span>
 <span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a>    <span class="co">// `facet` is a `UInt32Array`, so it needs to be copied before we can use it like this</span></span>
@@ -432,7 +429,7 @@ window.Quarto = {
 <span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a>    <span class="dt">data</span><span class="op">:</span> newData<span class="op">,</span></span>
 <span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a>    <span class="dt">facets</span><span class="op">:</span> newFacets</span>
 <span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
-<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display hidden">
 <div id="ojs-cell-5" data-nodetype="declaration">
 
@@ -514,14 +511,13 @@ window._ojs.runtime.interpretFromScriptTags();
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
