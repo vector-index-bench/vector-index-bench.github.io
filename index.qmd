@@ -26,3 +26,6 @@ In particular, head over to
   _all_ the configurations we tested for each algorithm
 - the [robustness](/robustness.html) page to investigate the robustness of algorithms
   with respect to the query difficulty
+
+If you find our work useful, please cite the following paper:
+> E. Jääsaari, V. Hyvönen, M. Ceccarello, T. Roos, M. Aumüller. [VIBE: Vector Index Benchmark for Embeddings](https://arxiv.org/pdf/2505.17810). arXiv preprint arXiv:2505.17810, 2025.
