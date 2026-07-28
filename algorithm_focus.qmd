@@ -17,10 +17,21 @@ any supported dataset.
 db = DuckDBClient.of({
 	summary: FileAttachment("results/summary.parquet"),
 	querydetail: FileAttachment("results/stats.parquet"),
+	algorithm_basics: {file: FileAttachment("algorithms_basics.csv"), header: true},
 });
 alldata = db.sql`select * from summary;`
-algorithms = db.sql`select distinct algorithm from summary;`
-datasets = db.sql`select distinct dataset from summary where dataset not like '%-id-%';`
+algorithms = db.sql`
+	select distinct summary.algorithm
+	from summary
+	inner join algorithm_basics using (algorithm)
+	order by summary.algorithm;
+`
+datasets = db.sql`
+	select distinct dataset
+	from summary
+	where dataset not like '%-id-%'
+	order by dataset;
+`
 
 colors = Array.from(d3["schemeTableau10"]).toReversed();
 ncolors = colors.length;

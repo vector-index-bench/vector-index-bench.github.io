@@ -4,7 +4,7 @@ author:
   - name: Elias Jääsaari
     affiliation: University of Helsinki
   - name: Ville Hyvönen
-    affiliation: Aalto University
+    affiliation: University of Helsinki
   - name: Matteo Ceccarello
     affiliation: University of Padova
   - name: Teemu Roos
