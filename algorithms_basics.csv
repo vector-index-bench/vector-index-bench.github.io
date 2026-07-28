@@ -8,9 +8,11 @@ falconnpp,false
 flatnav,false
 ggnn,true
 glass,false
-hnswlib,false
 hnsw(faiss),false
+hnswlib,false
 ivf(faiss),false
+ivf-rabitq(faiss),false
+ivf-turboquant(faiss),false
 ivfpqfs(faiss),false
 lorann,false
 mlann-rf,false
@@ -20,6 +22,8 @@ ngt-qg,false
 nsg(faiss),false
 puffinn,false
 pynndescent,false
+rabitq-hnsw,false
+rabitq-ivf,false
 roargraph,false
 scann,false
 symphonyqg,false
