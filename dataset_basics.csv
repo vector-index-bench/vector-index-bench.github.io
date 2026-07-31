@@ -13,9 +13,10 @@ gooaq-distilroberta-768-normalized,in-distribution
 hotpotqa-harrier-640-normalized,out-of-distribution
 imagenet-align-640-normalized,out-of-distribution
 imagenet-clip-512-normalized,in-distribution
+inaturalist-resnet-2048-cosine,in-distribution-additional
 laion-clip-512-normalized,out-of-distribution
 landmark-dino-768-cosine,in-distribution
-landmark-nomic-768-normalized,in-distribution
+landmark-nomic-768-normalized,in-distribution-additional
 llama-128-ip,out-of-distribution-additional
 msmarco-qwen-1024-normalized,in-distribution
 simplewiki-openai-3072-normalized,in-distribution-additional
