@@ -28,4 +28,4 @@ format:
   html:
     toc: false
     theme: flatly
-
+    css: styles.css

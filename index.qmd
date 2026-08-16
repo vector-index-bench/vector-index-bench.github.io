@@ -13,36 +13,57 @@ author:
     affiliation: IT University of Copenhagen
 ---
 
-----------
+<div class="vibe-home">
+<div class="vibe-lede">
+<p>This website hosts the results of <a href="https://github.com/vector-index-bench/vibe/">VIBE</a>,
+the Vector Index Benchmark for Embeddings. Use its interactive plots to explore
+the benchmark results.</p>
+</div>
 
-This website hosts the results of [VIBE](https://github.com/vector-index-bench/vibe/),
-the Vector Index Benchmark for Embeddings.
-You can use its interactive plots to explore the results of the benchmark.
-In particular, head over to
+<p class="vibe-section-label">Explore the results</p>
 
-- the [overview](/overview.html) page to compare all the algorithms across all datasets at a glance
-- the [datasets](/datasets.html) page for detailed information about all the datasets we consider
-- the [tradeoffs](/tradeoff.html) page to explore the tradeoff between recall and query throughput
-- the [algorithm focus](/algorithm_focus.html) page to see the performance of
-  _all_ the configurations we tested for each algorithm
-- the [robustness](/robustness.html) page to investigate the robustness of algorithms
-  with respect to the query difficulty
+<nav class="vibe-link-grid" aria-label="Benchmark result pages">
+<a class="vibe-link-card" href="/overview.html">
+<span class="vibe-link-title">Overview</span>
+<span>Compare every algorithm across all datasets at a glance.</span>
+</a>
+<a class="vibe-link-card" href="/datasets.html">
+<span class="vibe-link-title">Datasets</span>
+<span>Explore the datasets, embeddings, dimensions, and distance measures.</span>
+</a>
+<a class="vibe-link-card" href="/tradeoff.html">
+<span class="vibe-link-title">Tradeoffs</span>
+<span>Examine the tradeoff between recall and query throughput.</span>
+</a>
+<a class="vibe-link-card" href="/algorithm_focus.html">
+<span class="vibe-link-title">Algorithm focus</span>
+<span>Inspect every configuration tested for each algorithm.</span>
+</a>
+<a class="vibe-link-card" href="/robustness.html">
+<span class="vibe-link-title">Robustness</span>
+<span>Investigate how algorithms respond to query difficulty.</span>
+</a>
+</nav>
 
-#### Run VIBE
+<div class="vibe-action-grid">
+<section class="vibe-action-card" id="run-vibe">
+<h4>Run VIBE</h4>
+<p>The benchmark code and instructions for running it are available
+on <a href="https://github.com/vector-index-bench/vibe/">GitHub</a>.</p>
+</section>
 
-The benchmark code and instructions for running the benchmark are available in
-the [GitHub repository](https://github.com/vector-index-bench/vibe/).
+<section class="vibe-action-card" id="extend-vibe">
+<h4>Extend VIBE</h4>
+<p>Interested in contributing? Follow the guides for
+<a href="https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_METHOD.md">adding a new method</a>
+or <a href="https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_DATASET.md">a new dataset</a>.</p>
+</section>
+</div>
 
-#### Extend VIBE
-
-Interested in contributing to the benchmark? Follow the guides for
-[adding a new method](https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_METHOD.md)
-or
-[a new dataset](https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_DATASET.md).
-
-#### Citation
-
-If you find our work useful, please cite:
-
-Jääsaari, E., Hyvönen, V., Ceccarello, M., Roos, T., & Aumüller, M. (2025).  
-[*VIBE: Vector Index Benchmark for Embeddings*](https://arxiv.org/abs/2505.17810). arXiv:2505.17810.
+<section class="vibe-citation" id="citation">
+<h4>Citation</h4>
+<p>If you find our work useful, please cite:</p>
+<p class="vibe-citation-entry">Jääsaari, E., Hyvönen, V., Ceccarello, M., Roos, T., &amp; Aumüller, M. (2025).<br>
+<a href="https://arxiv.org/abs/2505.17810"><em>VIBE: Vector Index Benchmark for Embeddings</em></a>. arXiv:2505.17810.</p>
+</section>
+</div>
