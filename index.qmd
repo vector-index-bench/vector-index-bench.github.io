@@ -15,7 +15,8 @@ author:
 
 ----------
 
-This website hosts the results of VIBE, the Vector Index Benchmark for Embeddings.
+This website hosts the results of [VIBE](https://github.com/vector-index-bench/vibe/),
+the Vector Index Benchmark for Embeddings.
 You can use its interactive plots to explore the results of the benchmark.
 In particular, head over to
 
@@ -26,6 +27,20 @@ In particular, head over to
   _all_ the configurations we tested for each algorithm
 - the [robustness](/robustness.html) page to investigate the robustness of algorithms
   with respect to the query difficulty
+
+#### Run VIBE
+
+The benchmark code and instructions for running the benchmark are available in
+the [GitHub repository](https://github.com/vector-index-bench/vibe/).
+
+#### Extend VIBE
+
+Interested in contributing to the benchmark? Follow the guides for
+[adding a new method](https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_METHOD.md)
+or
+[a new dataset](https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_DATASET.md).
+
+#### Citation
 
 If you find our work useful, please cite:
 
