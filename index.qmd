@@ -11,6 +11,10 @@ author:
     affiliation: University of Helsinki
   - name: Martin Aumüller
     affiliation: IT University of Copenhagen
+format:
+  html:
+    grid:
+      body-width: 750px
 ---
 
 <div class="vibe-home">
@@ -54,16 +58,14 @@ on <a href="https://github.com/vector-index-bench/vibe/">GitHub</a>.</p>
 
 <section class="vibe-action-card" id="extend-vibe">
 <h4>Extend VIBE</h4>
-<p>Interested in contributing? Follow the guides for
-<a href="https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_METHOD.md">adding a new method</a>
-or <a href="https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_DATASET.md">a new dataset</a>.</p>
+<p>Interested in contributing? Follow the guide for
+<a href="https://github.com/vector-index-bench/vibe/blob/main/docs/NEW_METHOD.md">adding a new method</a>.</p>
 </section>
 </div>
 
 <section class="vibe-citation" id="citation">
 <h4>Citation</h4>
 <p>If you find our work useful, please cite:</p>
-<p class="vibe-citation-entry">Jääsaari, E., Hyvönen, V., Ceccarello, M., Roos, T., &amp; Aumüller, M. (2025).<br>
-<a href="https://arxiv.org/abs/2505.17810"><em>VIBE: Vector Index Benchmark for Embeddings</em></a>. arXiv:2505.17810.</p>
+<p class="vibe-citation-entry">E. Jääsaari, V. Hyvönen, M. Ceccarello, T. Roos, M. Aumüller. <a href="https://openreview.net/forum?id=6Sx6ra1QLz"><em>VIBE: Vector Index Benchmark for Embeddings</em></a>. Journal of Data-centric Machine Learning Research, 2026.</p>
 </section>
 </div>
