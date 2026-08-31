@@ -2,8 +2,11 @@
 echo: false
 ---
 
+::: {.overview-layout .column-screen-inset}
+
+::: {.overview-controls}
+
 ```{ojs}
-//| title: Parameters
 //| fill: false
 db = DuckDBClient.of({
   summary: FileAttachment("results/summary.parquet"),
@@ -12,19 +15,48 @@ db = DuckDBClient.of({
   algorithm_basics: {file: FileAttachment("algorithms_basics.csv"), header: true}
 });
 k_values = db.sql`select distinct k from summary;`
+dataset_catalog_rows = db.sql`
+  select distinct dataset, type
+  from basics natural join (select distinct dataset from summary)
+`;
+dataset_catalog = Array.from(dataset_catalog_rows)
+  .sort((a, b) => {
+    const aAdditional = a.type.endsWith("-additional");
+    const bAdditional = b.type.endsWith("-additional");
+    return d3.ascending(aAdditional, bAdditional) || d3.ascending(a.dataset, b.dataset);
+  });
+default_datasets = dataset_catalog
+  .filter((d) => !d.type.endsWith("-additional"))
+  .map((d) => d.dataset);
 viewof recall_threshold = Inputs.range([0,1], {step: 0.01, value: 0.9, label: "minimum recall"});
 viewof k_value = Inputs.select(k_values.map(d => d.k), {value: 10, label: "value of k"});
+viewof selected_datasets = {
+  const input = Inputs.checkbox(dataset_catalog.map((d) => d.dataset), {
+    label: "datasets",
+    value: default_datasets
+  });
+  input.classList.add("dataset-selector");
+  return input;
+}
+selected_dataset_lookup = `|${selected_datasets.join("|")}|`;
 ```
 
+:::
+
+::: {.overview-radars}
+
 ```{ojs}
-//| column: screen
 // The data to plot
 fastdata = db.sql`
   with
     normalized_names as (
       select k, dataset, algorithm, params, qps, recall from summary
     ),
-    selected_datasets as (select dataset, type from basics where type in ('in-distribution', 'out-of-distribution') ),
+    selected_datasets as (
+      select dataset, regexp_replace(type, '-additional$', '') as type
+      from basics
+      where contains(${selected_dataset_lookup}, '|' || dataset || '|')
+    ),
     filtered_summary as (
       select * from normalized_names natural join selected_datasets natural left join algorithm_basics
       where not is_gpu 
@@ -109,13 +141,13 @@ longitude = d3.scalePoint(
   [180, -180]
 ).padding(0.5).align(1);
 fmt_qps = d3.format(".2s");
+radar_width = Math.min(width, document.querySelector(".overview-radars").clientWidth);
 ```
 
 ```{ojs}
-//| column: screen-inset
 Plot.plot({
-  width: width,
-  height: 3*width/4,
+  width: radar_width,
+  height: 3*radar_width/4,
   marginTop: 20,
   marginBottom: 20,
   marginLeft: 20,
@@ -141,7 +173,7 @@ Plot.plot({
           text: "algorithm",
           frameAnchor: "top-left",
           fontWeight: "700",
-          fontSize: 24
+          fontSize: 18
       })
     ),
 
@@ -176,7 +208,7 @@ Plot.plot({
       text: (d) => ( d == 0.8 ? `${100 * d}%` : `${100 * d}%`),
       fill: "currentColor",
       stroke: "white",
-      fontSize: 18
+      fontSize: 14
     }),
 
     // axes labels
@@ -184,9 +216,11 @@ Plot.plot({
       fx: 0, fy: 0,
       x: longitude,
       y: 90 - 1.07,
-      text: Plot.identity,
-      lineWidth: 10,
-      fontSize: 18
+      text: (d) => d.replaceAll("-", "\n"),
+      lineWidth: 12,
+      lineHeight: 1.05,
+      fontSize: 12,
+      fontWeight: 600
     }),
 
     // axes labels, initials
@@ -196,7 +230,9 @@ Plot.plot({
       y: 90 - 1.09,
       text: d => d.slice(0,2),
       lineWidth: 5,
-      fontSize: 18
+      lineHeight: 1.05,
+      fontSize: 14,
+      fontWeight: 600
     }),
 
     // areas
@@ -239,4 +275,6 @@ Plot.plot({
 })
 ```
 
+:::
 
+:::
