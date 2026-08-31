@@ -12,6 +12,66 @@ body {
   color: var(--vibe-ink);
 }
 
+main#quarto-document-content:has(> .overview-layout) {
+  padding-top: 0;
+}
+
+main#quarto-document-content:has(> .overview-layout) > #title-block-header {
+  display: none;
+}
+
+.overview-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 0;
+}
+
+.overview-controls {
+  position: sticky;
+  top: 4.75rem;
+  max-height: calc(100vh - 5.75rem);
+  padding: 1rem;
+  overflow-y: auto;
+  border: 1px solid var(--vibe-border);
+  border-radius: 10px;
+  background: var(--vibe-soft);
+}
+
+.overview-controls .observablehq form {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0 0 1rem;
+}
+
+.overview-controls .observablehq form > label {
+  width: 100%;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  font-weight: 700;
+}
+
+.overview-controls .observablehq form > div {
+  width: 100%;
+}
+
+.overview-controls .dataset-selector > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.3rem;
+}
+
+.overview-controls .dataset-selector label {
+  margin-right: 0;
+  overflow-wrap: anywhere;
+}
+
+.overview-radars {
+  min-width: 0;
+}
+
 .navbar {
   box-shadow: 0 2px 12px rgba(22, 39, 54, 0.12);
 }
@@ -163,6 +223,18 @@ body {
   margin-top: 0.65rem;
   color: #44525e;
   line-height: 1.55;
+}
+
+@media (max-width: 900px) {
+  .overview-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .overview-controls {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
 }
 
 @media (max-width: 700px) {
