@@ -444,9 +444,9 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>To characterize the difficulty of queries, and hence of the workloads associated with each dataset, we consider the <em>relative contrast</em>, defined as [ RC_k = ] where <span class="math inline">\(d_{avg}\)</span> is the average distance of the query to the other points, and <span class="math inline">\(d_k\)</span> is the distance of the query from its <span class="math inline">\(k\)</span>-th nearest neighbor.</p>
-<p>The plot below reports the distribution of relative contrasts for <span class="math inline">\(k=100\)</span> for the datasets<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> in the benchmark, with datasets arranged in increasing order of difficulty, top to bottom.</p>
-<p><img src="distribution-rc100.png" class="img-fluid"></p>
+<p>To characterize the difficulty of queries, and hence of the workloads associated with each dataset, we consider the <em>local relative contrast dimension</em> at <span class="math inline">\(k\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Higher values indicate more difficult queries.</p>
+<p>The plot below reports the distribution of local relative contrast dimensions at <span class="math inline">\(k=100\)</span> across the benchmark datasets,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with datasets arranged in decreasing order of difficulty, top to bottom.</p>
+<p><img src="distribution-rcdim100.png" class="img-fluid"></p>
 
 
 
@@ -454,7 +454,8 @@ window.Quarto = {
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Datasets with <em>inner product</em> similarity are omitted from the plot, as the inner product is <em>not</em> a metric, and the relative constrast is not well-defined for non-metric distances.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Martin Aumüller and Matteo Ceccarello, <a href="https://www.sciencedirect.com/science/article/pii/S0306437921000569">“The role of local dimensionality measures in benchmarking nearest neighbor search”</a>, <em>Information Systems</em> 101 (2021), 101807.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Datasets with <em>inner product</em> similarity are omitted from the plot, as the inner product is <em>not</em> a metric, and the local relative contrast dimension is not well-defined for non-metric distances.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script type="ojs-module-contents">
