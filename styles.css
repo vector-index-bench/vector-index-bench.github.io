@@ -22,8 +22,8 @@ main#quarto-document-content:has(> .overview-layout) > #title-block-header {
 
 .overview-layout {
   display: grid;
-  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(250px, 20%) minmax(0, 1fr);
+  gap: 1rem;
   align-items: flex-start;
   margin-top: 0;
 }
@@ -32,11 +32,15 @@ main#quarto-document-content:has(> .overview-layout) > #title-block-header {
   position: sticky;
   top: 4.75rem;
   max-height: calc(100vh - 5.75rem);
-  padding: 1rem;
+  padding: 0;
   overflow-y: auto;
-  border: 1px solid var(--vibe-border);
-  border-radius: 10px;
-  background: var(--vibe-soft);
+  border: 1px solid var(--bs-border-color-translucent, rgba(0, 0, 0, 0.175));
+  border-radius: var(--bs-card-border-radius, 0.25rem);
+  background: var(--bs-card-bg, var(--vibe-surface));
+}
+
+.overview-controls > .card-body {
+  padding: 1rem;
 }
 
 .overview-controls .observablehq form {

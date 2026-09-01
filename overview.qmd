@@ -4,7 +4,9 @@ echo: false
 
 ::: {.overview-layout .column-screen-inset}
 
-::: {.overview-controls}
+::: {.overview-controls .card}
+
+::: {.card-body}
 
 ```{ojs}
 //| fill: false
@@ -40,6 +42,8 @@ viewof selected_datasets = {
 }
 selected_dataset_lookup = `|${selected_datasets.join("|")}|`;
 ```
+
+:::
 
 :::
 
