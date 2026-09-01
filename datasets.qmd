@@ -170,16 +170,9 @@ density_transform = function(data, facets) {
 
   
 To characterize the difficulty of queries, and hence of the workloads associated with each dataset,
-we consider the _relative contrast_, defined as
-\[
-RC_k = \frac{d_{avg}}{d_k}
-\]
-where $d_{avg}$ is the average distance of the query to the other points, and $d_k$ is the distance of the
-query from its $k$-th nearest neighbor.
+we consider the _local relative contrast dimension_ at $k$.^[Martin Aumüller and Matteo Ceccarello, [“The role of local dimensionality measures in benchmarking nearest neighbor search”](https://www.sciencedirect.com/science/article/pii/S0306437921000569), _Information Systems_ 101 (2021), 101807.] Higher values indicate more difficult queries.
 
-The plot below reports the distribution of relative contrasts for $k=100$ for the datasets^[Datasets with _inner product_ similarity are omitted from the plot, as the inner product is _not_ a metric, and the relative constrast is not well-defined for non-metric distances.]
-in the benchmark,
-with datasets arranged in increasing order of difficulty, top to bottom.
+The plot below reports the distribution of local relative contrast dimensions at $k=100$ across the benchmark datasets,^[Datasets with _inner product_ similarity are omitted from the plot, as the inner product is _not_ a metric, and the local relative contrast dimension is not well-defined for non-metric distances.]
+with datasets arranged in decreasing order of difficulty, top to bottom.
 
-![](distribution-rc100.png)
-
+![](distribution-rcdim100.png)
