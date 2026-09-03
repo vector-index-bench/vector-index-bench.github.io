@@ -3,16 +3,14 @@ echo: false
 format:
   dashboard:
     orientation: columns
+    css: styles.css
 ---
 
 ## Column {width=20%}
 
-:::{.card .fill}
+:::{.card .flow}
 To inspect the tradeoffs between recall and throughput, select a dataset and a value of $k$.
 Then, using the legend below, select the algorithms you are interested in.
-
-Hovering with the mouse on the central pane will "slice" through the plot, showing in the right pane
-the ranking of the algorithms at the recall highlighted by the red line.
 :::
 
 ```{ojs}
@@ -25,7 +23,7 @@ alldata = db.sql`select * from summary;`
 algorithms = db.sql`
 	select distinct algorithm
 	from summary natural join algorithm_basics
-	where (not is_gpu or ${include_gpu})
+	where is_gpu = ${gpu_algorithms}
 	order by all;
 `
 datasets = db.sql`
@@ -35,8 +33,8 @@ datasets = db.sql`
 	order by dataset;
 `
 
-colors = Array.from(d3["schemeTableau10"]).toReversed();
-ncolors = colors.length;
+palette = Array.from(d3["schemeTableau10"]);
+ncolors = palette.length;
 ```
 
 ```{ojs}
@@ -46,12 +44,21 @@ ncolors = colors.length;
 //
 //  - https://observablehq.com/framework/reactivity#mutables
 //  - https://observablehq.com/@dralletje/mutable
-mutable_color_map = new Mutable(new Map([
-	["lorann", colors.pop()],
-	["glass", colors.pop()],
-	["symphonyqg", colors.pop()],
+mutable_non_gpu_color_map = new Mutable(new Map([
+	["lorann", palette[0]],
+	["glass", palette[1]],
+	["symphonyqg", palette[2]],
 ]));
-color_map = mutable_color_map.generator
+non_gpu_color_map = mutable_non_gpu_color_map.generator
+
+mutable_gpu_color_map = new Mutable(new Map([
+	["cuvs-cagra", palette[0]],
+	["faiss-gpu-ivf", palette[1]],
+	["ggnn", palette[2]],
+]));
+gpu_color_map = mutable_gpu_color_map.generator
+
+color_map = gpu_algorithms ? gpu_color_map : non_gpu_color_map
 ```
 
 ```{ojs}
@@ -84,32 +91,48 @@ d3.select("#legend")
 		let cm = new Map(color_map);
 		console.log("Algorithm " + key);
 		if (cm.has(key)) {
-			const color = cm.get(key);
-			console.log("Returning color to the pool " + color);
 			cm.delete(key);
-			colors.push(color);
 		} else {
-			const color = colors.pop();
-			console.log("Got color from the pool " + color);
+			const usedColors = new Set(cm.values());
+			const color = palette.find(color => !usedColors.has(color));
 			if (color !== undefined) {
 				cm.set(key, color);
 			}
 		}
-		mutable_color_map.value = cm;
+		if (gpu_algorithms) {
+			mutable_gpu_color_map.value = cm;
+		} else {
+			mutable_non_gpu_color_map.value = cm;
+		}
 		console.log(color_map);
-		console.log(colors);
 		console.log(event.target);
 	})
 	.text(d => d.algorithm);
 ```
 
 ```{ojs}
-//| title: Algorithms
-viewof include_gpu = Inputs.toggle({label: "Include GPU", value: false})
+//| title: Algorithm type
+//| fill: false
+viewof gpu_algorithms = {
+	const control = html`
+		<div class="form-check form-switch d-flex align-items-center gap-2">
+			<input class="form-check-input mt-0" type="checkbox" role="switch" id="gpu-algorithms-toggle">
+			<label class="form-check-label" for="gpu-algorithms-toggle">GPU algorithms</label>
+		</div>
+	`;
+	const toggle = control.querySelector("input");
+	Object.defineProperty(control, "value", {get: () => toggle.checked});
+	return control;
+}
+```
 
+```{ojs}
+//| title: Algorithms
 html`
-<p>Select up to ${ncolors} algorithms to highlight them in the plot.</p>
-<div id="legend" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4pt;">
+<div class="algorithm-list-content">
+	<p>Select up to ${ncolors} algorithms to highlight them in the plot.</p>
+	<div id="legend" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4pt;">
+	</div>
 </div>
 `
 ```
@@ -124,7 +147,7 @@ pareto = db.sql`WITH
 filtered_summary AS (
 	SELECT *
 	FROM summary natural left join algorithm_basics
-	WHERE (NOT is_gpu or ${include_gpu})
+	WHERE is_gpu = ${gpu_algorithms}
 ),
 ranked_points AS (
 	SELECT
@@ -190,7 +213,7 @@ rankdata = db.sql`
 	FROM summary natural left join algorithm_basics
 	WHERE recall > ${dynamic_recall_threshold}
 	AND dataset = ${selected_dataset}
-	AND (not is_gpu or ${include_gpu}) 
+	AND is_gpu = ${gpu_algorithms}
 	GROUP BY dataset, algorithm, k
 `
 half = d3.max(rankdata, d => d.qps) / 2
