@@ -12,6 +12,27 @@ body {
   color: var(--vibe-ink);
 }
 
+#legend {
+  align-content: flex-start;
+  align-items: flex-start;
+}
+
+.card[data-title="Algorithms"] .card-body,
+.card[data-title="Algorithms"] .cell-output-display,
+.card[data-title="Algorithms"] [data-nodetype="expression"] {
+  justify-content: flex-start !important;
+}
+
+.card[data-title="Algorithms"] .card-body {
+  position: relative;
+}
+
+.algorithm-list-content {
+  position: absolute;
+  inset: 1rem;
+  overflow-y: auto;
+}
+
 main#quarto-document-content:has(> .overview-layout) {
   padding-top: 0;
 }
