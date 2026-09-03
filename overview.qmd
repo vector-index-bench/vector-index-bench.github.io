@@ -30,7 +30,7 @@ dataset_catalog = Array.from(dataset_catalog_rows)
 default_datasets = dataset_catalog
   .filter((d) => !d.type.endsWith("-additional"))
   .map((d) => d.dataset);
-viewof recall_threshold = Inputs.range([0,1], {step: 0.01, value: 0.9, label: "minimum recall"});
+viewof recall_threshold = Inputs.range([0,1], {step: 0.01, value: 0.95, label: "minimum recall"});
 viewof k_value = Inputs.select(k_values.map(d => d.k), {value: 10, label: "value of k"});
 viewof selected_datasets = {
   const input = Inputs.checkbox(dataset_catalog.map((d) => d.dataset), {
