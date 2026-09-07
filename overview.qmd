@@ -72,6 +72,12 @@ selected_dataset_lookup = `|${selected_datasets.join("|")}|`;
 
 ::: {.overview-radars}
 
+```{=html}
+<div class="radar-busy" role="status" aria-live="polite">
+  <span class="radar-busy-badge"><span class="radar-spinner" aria-hidden="true"></span>computing&hellip;</span>
+</div>
+```
+
 ```{ojs}
 // The data to plot
 fastdata = db.sql`
@@ -169,137 +175,159 @@ longitude = d3.scalePoint(
 ).padding(0.5).align(1);
 fmt_qps = d3.format(".2s");
 radar_width = Math.min(width, document.querySelector(".overview-radars").clientWidth);
+
+// Busy indicator: the pane is flagged as soon as one of the controls changes,
+// and the flag is cleared again by the plot cell, once the recomputed data has
+// made it all the way to a new figure.
+radar_pane = document.querySelector(".overview-radars");
+set_radar_busy = function(busy) {
+  if (radar_pane) radar_pane.classList.toggle("is-computing", busy);
+  return busy;
+}
+radar_busy = {
+  // Depend on the controls (rather than on the query result) so that this runs
+  // synchronously, while the DuckDB query behind `fastdata` is still pending.
+  recall_threshold;
+  k_value;
+  selected_dataset_lookup;
+  return set_radar_busy(true);
+}
 ```
 
 ```{ojs}
-Plot.plot({
-  width: radar_width,
-  height: 3*radar_width/4,
-  marginTop: 20,
-  marginBottom: 20,
-  marginLeft: 20,
-  marginRight: 20,
-  projection: {
-    type: "azimuthal-equidistant",
-    rotate: [0, -90],
-    // Note: 1.22° corresponds to max. percentage (1.0), plus some room for the labels
-    domain: d3.geoCircle().center([0, 90]).radius(1.22)()
-  },
-  facet: {
-    data: fastdata,
-    y: (d) => d.fx, //Math.floor(d.algorithm_rank / 4),
-    x: (d) => d.fy, // d.algorithm_rank % 4,
-    axis: null
-  },
-  fx: {padding: .1},
-  fy: {padding: .1},
-  marks: [
-    // Facet name
-    Plot.text(fastdata,
-      Plot.selectFirst({
-          text: "algorithm",
-          frameAnchor: "top-left",
-          fontWeight: "700",
-          fontSize: 18
-      })
-    ),
+{
+  radar_busy; // keep the "computing" overlay up until this figure is ready
+  const plot = Plot.plot({
+    width: radar_width,
+    height: 3*radar_width/4,
+    marginTop: 20,
+    marginBottom: 20,
+    marginLeft: 20,
+    marginRight: 20,
+    projection: {
+      type: "azimuthal-equidistant",
+      rotate: [0, -90],
+      // Note: 1.22° corresponds to max. percentage (1.0), plus some room for the labels
+      domain: d3.geoCircle().center([0, 90]).radius(1.22)()
+    },
+    facet: {
+      data: fastdata,
+      y: (d) => d.fx, //Math.floor(d.algorithm_rank / 4),
+      x: (d) => d.fy, // d.algorithm_rank % 4,
+      axis: null
+    },
+    fx: {padding: .1},
+    fy: {padding: .1},
+    marks: [
+      // Facet name
+      Plot.text(fastdata,
+        Plot.selectFirst({
+            text: "algorithm",
+            frameAnchor: "top-left",
+            fontWeight: "700",
+            fontSize: 18
+        })
+      ),
 
-    // grey discs
-    Plot.geo([1.0, 0.8, 0.6, 0.4, 0.2], {
-      geometry: (r) => d3.geoCircle().center([0, 90]).radius(r)(),
-      stroke: "black",
-      fill: "black",
-      strokeOpacity: 0.2,
-      fillOpacity: 0.03,
-      strokeWidth: 0.5
-    }),
+      // grey discs
+      Plot.geo([1.0, 0.8, 0.6, 0.4, 0.2], {
+        geometry: (r) => d3.geoCircle().center([0, 90]).radius(r)(),
+        stroke: "black",
+        fill: "black",
+        strokeOpacity: 0.2,
+        fillOpacity: 0.03,
+        strokeWidth: 0.5
+      }),
 
-    // colored axes
-    Plot.link(longitude.domain(), {
-      x1: longitude,
-      y1: 90 - 1,
-      x2: 0,
-      y2: 90,
-      stroke: (d) => type_color(dataset_types[d]),
-      strokeOpacity: 0.5,
-      strokeWidth: 2.5
-    }),
+      // colored axes
+      Plot.link(longitude.domain(), {
+        x1: longitude,
+        y1: 90 - 1,
+        x2: 0,
+        y2: 90,
+        stroke: (d) => type_color(dataset_types[d]),
+        strokeOpacity: 0.5,
+        strokeWidth: 2.5
+      }),
 
-    // tick labels
-    Plot.text([0.4, 0.6, 0.8], {
-      fx: 0, fy: 0,
-      x: 180,
-      y: (d) => 90 - d,
-      dx: 2,
-      textAnchor: "start",
-      text: (d) => ( d == 0.8 ? `${100 * d}%` : `${100 * d}%`),
-      fill: "currentColor",
-      stroke: "white",
-      fontSize: 14
-    }),
-
-    // axes labels
-    Plot.text(longitude.domain(), {
-      fx: 0, fy: 0,
-      x: longitude,
-      y: 90 - 1.07,
-      text: (d) => d.replaceAll("-", "\n"),
-      lineWidth: 12,
-      lineHeight: 1.05,
-      fontSize: 12,
-      fontWeight: 600
-    }),
-
-    // axes labels, initials
-    Plot.text(longitude.domain(), {
-      fx: 0, fy: 0, facet: "exclude",
-      x: longitude,
-      y: 90 - 1.09,
-      text: d => d.slice(0,2),
-      lineWidth: 5,
-      lineHeight: 1.05,
-      fontSize: 14,
-      fontWeight: 600
-    }),
-
-    // areas
-    Plot.area(fastdata, {
-      x1: ({ dataset }) => longitude(dataset),
-      y1: ({ scaled_qps }) => 90 - scaled_qps,
-      x2: 0,
-      y2: 90,
-      fill: "gray",
-      fillOpacity: 0.25,
-      stroke: "gray",
-      curve: "cardinal-closed"
-    }),
-
-    // data values
-    Plot.dot(fastdata, {
-      x: (d) => longitude(d.dataset),
-      y: (d) => 90 - d.scaled_qps,
-      fill: (d) => type_color(d.dataset_type),
-      stroke: "white"
-    }),
-
-    // interactive labels
-    Plot.text(
-      fastdata,
-      Plot.pointer({
-        x: ({ dataset }) => longitude(dataset),
-        y: ({ scaled_qps }) => 90 - scaled_qps,
-        text: (d) => `${fmt_qps(d.qps)} qps\n(${Math.round(100 * d.scaled_qps)}%)\n${d.params}`,
+      // tick labels
+      Plot.text([0.4, 0.6, 0.8], {
+        fx: 0, fy: 0,
+        x: 180,
+        y: (d) => 90 - d,
+        dx: 2,
         textAnchor: "start",
-        dx: 4,
+        text: (d) => ( d == 0.8 ? `${100 * d}%` : `${100 * d}%`),
         fill: "currentColor",
         stroke: "white",
-        maxRadius: 10,
-        fontSize: 18
-      })
-    )
-    
-  ]
-})
+        fontSize: 14
+      }),
+
+      // axes labels
+      Plot.text(longitude.domain(), {
+        fx: 0, fy: 0,
+        x: longitude,
+        y: 90 - 1.07,
+        text: (d) => d.replaceAll("-", "\n"),
+        lineWidth: 12,
+        lineHeight: 1.05,
+        fontSize: 12,
+        fontWeight: 600
+      }),
+
+      // axes labels, initials
+      Plot.text(longitude.domain(), {
+        fx: 0, fy: 0, facet: "exclude",
+        x: longitude,
+        y: 90 - 1.09,
+        text: d => d.slice(0,2),
+        lineWidth: 5,
+        lineHeight: 1.05,
+        fontSize: 14,
+        fontWeight: 600
+      }),
+
+      // areas
+      Plot.area(fastdata, {
+        x1: ({ dataset }) => longitude(dataset),
+        y1: ({ scaled_qps }) => 90 - scaled_qps,
+        x2: 0,
+        y2: 90,
+        fill: "gray",
+        fillOpacity: 0.25,
+        stroke: "gray",
+        curve: "cardinal-closed"
+      }),
+
+      // data values
+      Plot.dot(fastdata, {
+        x: (d) => longitude(d.dataset),
+        y: (d) => 90 - d.scaled_qps,
+        fill: (d) => type_color(d.dataset_type),
+        stroke: "white"
+      }),
+
+      // interactive labels
+      Plot.text(
+        fastdata,
+        Plot.pointer({
+          x: ({ dataset }) => longitude(dataset),
+          y: ({ scaled_qps }) => 90 - scaled_qps,
+          text: (d) => `${fmt_qps(d.qps)} qps\n(${Math.round(100 * d.scaled_qps)}%)\n${d.params}`,
+          textAnchor: "start",
+          dx: 4,
+          fill: "currentColor",
+          stroke: "white",
+          maxRadius: 10,
+          fontSize: 18
+        })
+      )
+      
+    ]
+  });
+  set_radar_busy(false);
+  return plot;
+}
 ```
 
 :::
