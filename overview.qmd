@@ -148,8 +148,8 @@ fastdata = db.sql`
     scaled_qps,
     qps,
     params,
-    (algorithm_rank / 6) as fx,
-    (algorithm_rank % 6) as fy
+    -- cast to INTEGER so that it reaches Observable as a number, not a BigInt
+    cast(algorithm_rank as integer) as algorithm_rank
   from scaled natural join algorithms_ranks natural join dataset_ranks
   where rank = 1 or rank is null
   order by dataset_rank, algorithm, qps;
@@ -176,6 +176,17 @@ longitude = d3.scalePoint(
 fmt_qps = d3.format(".2s");
 radar_width = Math.min(width, document.querySelector(".overview-radars").clientWidth);
 
+// Grid geometry, recomputed whenever the pane is resized: fit as many radars
+// per row as possible while keeping each cell wide enough to stay readable.
+// Cell 0 is the legend (the empty facet carrying the full axis labels), so the
+// grid has to hold one cell more than there are algorithms.
+radar_cell_min_width = 190;
+radar_cell_aspect = 1.1;
+radar_cells = facet_keys.length + 1;
+radar_cols = Math.max(2, Math.min(radar_cells - 1, Math.round(radar_width / radar_cell_min_width)));
+radar_rows = Math.ceil(radar_cells / radar_cols);
+radar_height = radar_rows * (radar_width / radar_cols) * radar_cell_aspect;
+
 // Busy indicator: the pane is flagged as soon as one of the controls changes,
 // and the flag is cleared again by the plot cell, once the recomputed data has
 // made it all the way to a new figure.
@@ -199,7 +210,7 @@ radar_busy = {
   radar_busy; // keep the "computing" overlay up until this figure is ready
   const plot = Plot.plot({
     width: radar_width,
-    height: 3*radar_width/4,
+    height: radar_height,
     marginTop: 20,
     marginBottom: 20,
     marginLeft: 20,
@@ -212,8 +223,8 @@ radar_busy = {
     },
     facet: {
       data: fastdata,
-      y: (d) => d.fx, //Math.floor(d.algorithm_rank / 4),
-      x: (d) => d.fy, // d.algorithm_rank % 4,
+      y: (d) => Math.floor(d.algorithm_rank / radar_cols),
+      x: (d) => d.algorithm_rank % radar_cols,
       axis: null
     },
     fx: {padding: .1},
