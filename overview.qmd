@@ -72,6 +72,16 @@ selected_dataset_lookup = `|${selected_datasets.join("|")}|`;
 
 ::: {.overview-radars}
 
+# Overview of the results
+
+These radar charts present a bird's eye view of the results, at a fixed minimum recall level.
+For each dataset, we pick the fastest configuration of each algorithm reaching a recall higher than the selected minimum. Each circle in the plot below depicts the performance of a single algorithm across all selected datasets, where each dataset corresponds to a radial spine.
+Along a spine, the performance of a given algorithm is reported as the percentage of its queries-per-second (qps) with respect to the fastest algorithm on that dataset. Therefore, the farther from the center the better the performance.
+
+As such, an algorithm whose shaded area covers a large portion of the circle has an overall good performance.
+The algorithms are then arranged, in row major order, by the average rank they achieve across all selected datasets.
+
+
 ```{=html}
 <div class="radar-busy" role="status" aria-live="polite">
   <span class="radar-busy-badge"><span class="radar-spinner" aria-hidden="true"></span>computing&hellip;</span>
