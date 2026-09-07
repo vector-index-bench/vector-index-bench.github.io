@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,13 +12,10 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
+code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: 1.5em;}
-div.column{flex: auto;}
-@media screen {
-div.columns{gap: min(4vw, 1.5em);}
-div.column{overflow-x: auto;}
-}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -77,10 +74,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b653a8c7f8c78f0e3d4cc36e98f1d7c7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6850022462a7f7fe0eeed1167349ad0e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -204,17 +201,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>default_datasets <span class="op">=</span> dataset_catalog</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">filter</span>((d) <span class="kw">=&gt;</span> <span class="op">!</span>d<span class="op">.</span><span class="at">type</span><span class="op">.</span><span class="fu">endsWith</span>(<span class="st">"-additional"</span>))</span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">map</span>((d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">dataset</span>)<span class="op">;</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>viewof recall_threshold <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">0</span><span class="op">,</span><span class="dv">1</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.95</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"minimum recall"</span>})<span class="op">;</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>viewof k_value <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(k_values<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">k</span>)<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"value of k"</span>})<span class="op">;</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>viewof selected_datasets <span class="op">=</span> {</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> input <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(dataset_catalog<span class="op">.</span><span class="fu">map</span>((d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">dataset</span>)<span class="op">,</span> {</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"datasets"</span><span class="op">,</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="dt">value</span><span class="op">:</span> default_datasets</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  input<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">add</span>(<span class="st">"dataset-selector"</span>)<span class="op">;</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> input<span class="op">;</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>selected_dataset_lookup <span class="op">=</span> <span class="vs">`|</span><span class="sc">${</span>selected_datasets<span class="op">.</span><span class="fu">join</span>(<span class="st">"|"</span>)<span class="sc">}</span><span class="vs">|`</span><span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>dataset_types1 <span class="op">=</span> dataset_catalog<span class="op">.</span><span class="fu">reduce</span>((map<span class="op">,</span> d) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  map[d<span class="op">.</span><span class="at">dataset</span>] <span class="op">=</span> d<span class="op">.</span><span class="at">type</span><span class="op">.</span><span class="fu">replace</span>(<span class="ss">/-additional</span><span class="sc">$</span><span class="ss">/</span><span class="op">,</span> <span class="st">""</span>)<span class="op">;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> map<span class="op">;</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> {})<span class="op">;</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">// Colour encoding shared by the dataset selector and the radar plots.</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>type_color <span class="op">=</span> (t) <span class="kw">=&gt;</span> (t <span class="op">==</span> <span class="st">"in-distribution"</span>) <span class="op">?</span> <span class="st">"#1f77b4"</span> <span class="op">:</span> <span class="st">"#ff7f0e"</span><span class="op">;</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>swatch <span class="op">=</span> (t) <span class="kw">=&gt;</span> <span class="fu">html</span><span class="vs">`&lt;span style="</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="vs">    display: inline-block;</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="vs">    width: 1.4ex;</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="vs">    height: 1.4ex;</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="vs">    flex: none;</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="vs">    border-radius: 2px;</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="vs">    background: </span><span class="sc">${</span><span class="fu">type_color</span>(t)<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="vs">  "&gt;&lt;/span&gt;`</span><span class="op">;</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>swatch_label <span class="op">=</span> (t<span class="op">,</span> text) <span class="kw">=&gt;</span> <span class="fu">html</span><span class="vs">`&lt;span style="</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="vs">    display: inline-flex; align-items: center; gap: 0.6ex;</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="vs">  "&gt;</span><span class="sc">${</span><span class="fu">swatch</span>(t)<span class="sc">}${</span>text<span class="sc">}</span><span class="vs">&lt;/span&gt;`</span><span class="op">;</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>viewof recall_threshold <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">0</span><span class="op">,</span><span class="dv">1</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="fl">0.01</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="fl">0.95</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"minimum recall"</span>})<span class="op">;</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>viewof k_value <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">select</span>(k_values<span class="op">.</span><span class="fu">map</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">k</span>)<span class="op">,</span> {<span class="dt">value</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"value of k"</span>})<span class="op">;</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>viewof selected_datasets <span class="op">=</span> {</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> input <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(dataset_catalog<span class="op">.</span><span class="fu">map</span>((d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">dataset</span>)<span class="op">,</span> {</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    <span class="dt">label</span><span class="op">:</span> <span class="fu">html</span><span class="vs">`&lt;span style="display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 1.2ex; row-gap: 0.2rem;"&gt;datasets&lt;span style="</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="vs">        display: flex; flex-wrap: wrap; column-gap: 1.2ex; row-gap: 0.2rem;</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="vs">        font-weight: 400; font-size: 0.85em;</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="vs">      "&gt;</span><span class="sc">${</span><span class="fu">swatch_label</span>(<span class="st">"in-distribution"</span><span class="op">,</span> <span class="st">"in-distribution"</span>)<span class="sc">}${</span><span class="fu">swatch_label</span>(<span class="st">"out-of-distribution"</span><span class="op">,</span> <span class="st">"out-of-distribution"</span>)<span class="sc">}</span><span class="vs">&lt;/span&gt;&lt;/span&gt;`</span><span class="op">,</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    <span class="dt">format</span><span class="op">:</span> (x) <span class="kw">=&gt;</span> <span class="fu">swatch_label</span>(dataset_types1[x]<span class="op">,</span> x)<span class="op">,</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    <span class="dt">value</span><span class="op">:</span> default_datasets</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>  input<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">add</span>(<span class="st">"dataset-selector"</span>)<span class="op">;</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> input<span class="op">;</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>selected_dataset_lookup <span class="op">=</span> <span class="vs">`|</span><span class="sc">${</span>selected_datasets<span class="op">.</span><span class="fu">join</span>(<span class="st">"|"</span>)<span class="sc">}</span><span class="vs">|`</span><span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -278,106 +298,165 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-10" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-11" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-12" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-13" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="overview-radars">
+<div class="radar-busy" role="status" aria-live="polite">
+  <span class="radar-busy-badge"><span class="radar-spinner" aria-hidden="true"></span>computing…</span>
+</div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="54" data-source-offset="-20"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 53;"><span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>fastdata <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`</span></span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="vs">  with</span></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="vs">    normalized_names as (</span></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="vs">      select k, dataset, algorithm, params, qps, recall from summary</span></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="vs">    selected_datasets as (</span></span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="vs">      select dataset, regexp_replace(type, '-additional$', '') as type</span></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="vs">      from basics</span></span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="vs">      where contains(</span><span class="sc">${</span>selected_dataset_lookup<span class="sc">}</span><span class="vs">, '|' || dataset || '|')</span></span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="vs">    filtered_summary as (</span></span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="vs">      select * from normalized_names natural join selected_datasets natural left join algorithm_basics</span></span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="vs">      where not is_gpu </span></span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="vs">    all_datasets as ( select distinct dataset, type from filtered_summary ),</span></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="vs">    all_algorithms as ( select distinct algorithm from filtered_summary ),</span></span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="vs">    expected_combinations as (</span></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="vs">      select *</span></span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="vs">      from all_datasets cross join all_algorithms</span></span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="vs">    ranked as (</span></span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="vs">        select *, row_number() over (partition by algorithm, dataset order by qps desc) as rank</span></span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="vs">        from filtered_summary</span></span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="vs">        where recall &gt;= </span><span class="sc">${</span>recall_threshold<span class="sc">}</span><span class="vs"> and k = </span><span class="sc">${</span>k_value<span class="sc">}</span></span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="vs">    scaled as (</span></span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="vs">      select</span></span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="vs">        *,</span></span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="vs">        ifnull(qps, 0) / max(qps) over (partition by dataset, type) as scaled_qps</span></span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="vs">      from ranked</span></span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="vs">        natural right join expected_combinations</span></span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="vs">    best_performing as (</span></span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="vs">      select algorithm, dataset, max(scaled_qps) as best_performance</span></span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="vs">      from scaled</span></span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="vs">      group by all</span></span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="vs">    algorithms as (</span></span>
-<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="vs">      select algorithm, avg(best_performance) as mean_perf</span></span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="vs">      from best_performing</span></span>
-<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="vs">      group by all</span></span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="vs">    algorithms_ranks as (</span></span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="vs">      select</span></span>
-<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="vs">        algorithm, mean_perf,</span></span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="vs">        row_number() over (order by mean_perf desc) as algorithm_rank</span></span>
-<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="vs">      from algorithms</span></span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="vs">    datasets as (</span></span>
-<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="vs">      select dataset, type, avg(rc100) as difficulty</span></span>
-<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="vs">      from stats natural join selected_datasets</span></span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="vs">      group by all</span></span>
-<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="vs">    dataset_ranks as (</span></span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="vs">      select</span></span>
-<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="vs">        dataset, difficulty,</span></span>
-<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="vs">        row_number() over (order by type, contains(dataset, '-ip'), difficulty desc) as dataset_rank</span></span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a><span class="vs">      from datasets </span></span>
-<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="vs">    )</span></span>
-<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="vs">  select</span></span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="vs">    algorithm,</span></span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="vs">    regexp_replace(dataset, '-[0-9]+-(cosine|normalized|euclidean|ip)', '') as dataset,</span></span>
-<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="vs">    type as dataset_type,</span></span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="vs">    dataset_rank,</span></span>
-<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a><span class="vs">    k,</span></span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="vs">    scaled_qps,</span></span>
-<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="vs">    qps,</span></span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="vs">    params,</span></span>
-<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="vs">    (algorithm_rank / 6) as fx,</span></span>
-<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a><span class="vs">    (algorithm_rank % 6) as fy</span></span>
-<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="vs">  from scaled natural join algorithms_ranks natural join dataset_ranks</span></span>
-<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a><span class="vs">  where rank = 1 or rank is null</span></span>
-<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a><span class="vs">  order by dataset_rank, algorithm, qps;</span></span>
-<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span>
-<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>facet_keys <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>(d3<span class="op">.</span><span class="fu">union</span>(fastdata<span class="op">.</span><span class="fu">map</span>((d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">algorithm</span>)))<span class="op">;</span></span>
-<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>dataset_ranks <span class="op">=</span> fastdata<span class="op">.</span><span class="fu">reduce</span>((map<span class="op">,</span> d) <span class="kw">=&gt;</span> {</span>
-<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>  map[d<span class="op">.</span><span class="at">dataset</span>] <span class="op">=</span> d<span class="op">.</span><span class="at">dataset_rank</span><span class="op">;</span></span>
-<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> map<span class="op">;</span></span>
-<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> {})<span class="op">;</span></span>
-<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>dataset_types <span class="op">=</span> fastdata<span class="op">.</span><span class="fu">reduce</span>((map<span class="op">,</span> d) <span class="kw">=&gt;</span> {</span>
-<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>  map[d<span class="op">.</span><span class="at">dataset</span>] <span class="op">=</span> d<span class="op">.</span><span class="at">dataset_type</span><span class="op">;</span></span>
-<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> map<span class="op">;</span></span>
-<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> {})<span class="op">;</span></span>
-<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>longitude_domain <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">keys</span>(dataset_ranks)<span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> dataset_ranks[a] <span class="op">-</span> dataset_ranks[b])<span class="op">;</span></span>
-<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="co">// Scales</span></span>
-<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>longitude <span class="op">=</span> d3<span class="op">.</span><span class="fu">scalePoint</span>(</span>
-<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>  longitude_domain<span class="op">,</span></span>
-<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">180</span><span class="op">,</span> <span class="op">-</span><span class="dv">180</span>]</span>
-<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>)<span class="op">.</span><span class="fu">padding</span>(<span class="fl">0.5</span>)<span class="op">.</span><span class="fu">align</span>(<span class="dv">1</span>)<span class="op">;</span></span>
-<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>fmt_qps <span class="op">=</span> d3<span class="op">.</span><span class="fu">format</span>(<span class="st">".2s"</span>)<span class="op">;</span></span>
-<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>radar_width <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(width<span class="op">,</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">".overview-radars"</span>)<span class="op">.</span><span class="at">clientWidth</span>)<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb2" data-startfrom="83" data-source-offset="-20"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 82;"><span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>fastdata <span class="op">=</span> db<span class="op">.</span><span class="fu">sql</span><span class="vs">`</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="vs">  with</span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="vs">    normalized_names as (</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="vs">      select k, dataset, algorithm, params, qps, recall from summary</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="vs">    selected_datasets as (</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="vs">      select dataset, regexp_replace(type, '-additional$', '') as type</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="vs">      from basics</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="vs">      where contains(</span><span class="sc">${</span>selected_dataset_lookup<span class="sc">}</span><span class="vs">, '|' || dataset || '|')</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="vs">    filtered_summary as (</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="vs">      select * from normalized_names natural join selected_datasets natural left join algorithm_basics</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="vs">      where not is_gpu </span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="vs">    all_datasets as ( select distinct dataset, type from filtered_summary ),</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="vs">    all_algorithms as ( select distinct algorithm from filtered_summary ),</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="vs">    expected_combinations as (</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a><span class="vs">      select *</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="vs">      from all_datasets cross join all_algorithms</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="vs">    ranked as (</span></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="vs">        select *, row_number() over (partition by algorithm, dataset order by qps desc) as rank</span></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="vs">        from filtered_summary</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a><span class="vs">        where recall &gt;= </span><span class="sc">${</span>recall_threshold<span class="sc">}</span><span class="vs"> and k = </span><span class="sc">${</span>k_value<span class="sc">}</span></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="vs">    scaled as (</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="vs">      select</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="vs">        *,</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a><span class="vs">        ifnull(qps, 0) / max(qps) over (partition by dataset, type) as scaled_qps</span></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="vs">      from ranked</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="vs">        natural right join expected_combinations</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a><span class="vs">    best_performing as (</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="vs">      select algorithm, dataset, max(scaled_qps) as best_performance</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="vs">      from scaled</span></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a><span class="vs">      group by all</span></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="vs">    algorithms as (</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="vs">      select algorithm, avg(best_performance) as mean_perf</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="vs">      from best_performing</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a><span class="vs">      group by all</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a><span class="vs">    algorithms_ranks as (</span></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a><span class="vs">      select</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a><span class="vs">        algorithm, mean_perf,</span></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="vs">        row_number() over (order by mean_perf desc) as algorithm_rank</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="vs">      from algorithms</span></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a><span class="vs">    datasets as (</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="vs">      select dataset, type, avg(rc100) as difficulty</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="vs">      from stats natural join selected_datasets</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="vs">      group by all</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="vs">    ),</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="vs">    dataset_ranks as (</span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a><span class="vs">      select</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="vs">        dataset, difficulty,</span></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="vs">        row_number() over (order by type, contains(dataset, '-ip'), difficulty desc) as dataset_rank</span></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="vs">      from datasets </span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="vs">    )</span></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="vs">  select</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="vs">    algorithm,</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="vs">    regexp_replace(dataset, '-[0-9]+-(cosine|normalized|euclidean|ip)', '') as dataset,</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="vs">    type as dataset_type,</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="vs">    dataset_rank,</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="vs">    k,</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="vs">    scaled_qps,</span></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a><span class="vs">    qps,</span></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a><span class="vs">    params,</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a><span class="vs">    -- cast to INTEGER so that it reaches Observable as a number, not a BigInt</span></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="vs">    cast(algorithm_rank as integer) as algorithm_rank</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="vs">  from scaled natural join algorithms_ranks natural join dataset_ranks</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a><span class="vs">  where rank = 1 or rank is null</span></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a><span class="vs">  order by dataset_rank, algorithm, qps;</span></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>facet_keys <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>(d3<span class="op">.</span><span class="fu">union</span>(fastdata<span class="op">.</span><span class="fu">map</span>((d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">algorithm</span>)))<span class="op">;</span></span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>dataset_ranks <span class="op">=</span> fastdata<span class="op">.</span><span class="fu">reduce</span>((map<span class="op">,</span> d) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>  map[d<span class="op">.</span><span class="at">dataset</span>] <span class="op">=</span> d<span class="op">.</span><span class="at">dataset_rank</span><span class="op">;</span></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> map<span class="op">;</span></span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> {})<span class="op">;</span></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>dataset_types <span class="op">=</span> fastdata<span class="op">.</span><span class="fu">reduce</span>((map<span class="op">,</span> d) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>  map[d<span class="op">.</span><span class="at">dataset</span>] <span class="op">=</span> d<span class="op">.</span><span class="at">dataset_type</span><span class="op">;</span></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> map<span class="op">;</span></span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> {})<span class="op">;</span></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a>longitude_domain <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">keys</span>(dataset_ranks)<span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> dataset_ranks[a] <span class="op">-</span> dataset_ranks[b])<span class="op">;</span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="co">// Scales</span></span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a>longitude <span class="op">=</span> d3<span class="op">.</span><span class="fu">scalePoint</span>(</span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>  longitude_domain<span class="op">,</span></span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>  [<span class="dv">180</span><span class="op">,</span> <span class="op">-</span><span class="dv">180</span>]</span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a>)<span class="op">.</span><span class="fu">padding</span>(<span class="fl">0.5</span>)<span class="op">.</span><span class="fu">align</span>(<span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a>fmt_qps <span class="op">=</span> d3<span class="op">.</span><span class="fu">format</span>(<span class="st">".2s"</span>)<span class="op">;</span></span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>radar_width <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(width<span class="op">,</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">".overview-radars"</span>)<span class="op">.</span><span class="at">clientWidth</span>)<span class="op">;</span></span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="co">// Grid geometry, recomputed whenever the pane is resized: fit as many radars</span></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a><span class="co">// per row as possible while keeping each cell wide enough to stay readable.</span></span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="co">// Cell 0 is the legend (the empty facet carrying the full axis labels), so the</span></span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a><span class="co">// grid has to hold one cell more than there are algorithms.</span></span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a>radar_cell_min_width <span class="op">=</span> <span class="dv">190</span><span class="op">;</span></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>radar_cell_aspect <span class="op">=</span> <span class="fl">1.1</span><span class="op">;</span></span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>radar_cells <span class="op">=</span> facet_keys<span class="op">.</span><span class="at">length</span> <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>radar_cols <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">2</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">min</span>(radar_cells <span class="op">-</span> <span class="dv">1</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">round</span>(radar_width <span class="op">/</span> radar_cell_min_width)))<span class="op">;</span></span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>radar_rows <span class="op">=</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">ceil</span>(radar_cells <span class="op">/</span> radar_cols)<span class="op">;</span></span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>radar_height <span class="op">=</span> radar_rows <span class="op">*</span> (radar_width <span class="op">/</span> radar_cols) <span class="op">*</span> radar_cell_aspect<span class="op">;</span></span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a><span class="co">// Busy indicator: the pane is flagged as soon as one of the controls changes,</span></span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a><span class="co">// and the flag is cleared again by the plot cell, once the recomputed data has</span></span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a><span class="co">// made it all the way to a new figure.</span></span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a>radar_pane <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">".overview-radars"</span>)<span class="op">;</span></span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a>set_radar_busy <span class="op">=</span> <span class="kw">function</span>(busy) {</span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (radar_pane) radar_pane<span class="op">.</span><span class="at">classList</span><span class="op">.</span><span class="fu">toggle</span>(<span class="st">"is-computing"</span><span class="op">,</span> busy)<span class="op">;</span></span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> busy<span class="op">;</span></span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a>radar_busy <span class="op">=</span> {</span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Depend on the controls (rather than on the query result) so that this runs</span></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a>  <span class="co">// synchronously, while the DuckDB query behind `fastdata` is still pending.</span></span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a>  recall_threshold<span class="op">;</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a>  k_value<span class="op">;</span></span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>  selected_dataset_lookup<span class="op">;</span></span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">set_radar_busy</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-2-1" data-nodetype="declaration">
@@ -434,136 +513,204 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-9" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-10" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-11" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-12" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-13" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-14" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-15" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-16" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-17" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb3" data-startfrom="151" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 150;"><span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>  <span class="dt">width</span><span class="op">:</span> radar_width<span class="op">,</span></span>
-<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>  <span class="dt">height</span><span class="op">:</span> <span class="dv">3</span><span class="op">*</span>radar_width<span class="op">/</span><span class="dv">4</span><span class="op">,</span></span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
-<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>  <span class="dt">projection</span><span class="op">:</span> {</span>
-<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>    <span class="dt">type</span><span class="op">:</span> <span class="st">"azimuthal-equidistant"</span><span class="op">,</span></span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>    <span class="dt">rotate</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="op">-</span><span class="dv">90</span>]<span class="op">,</span></span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Note: 1.22° corresponds to max. percentage (1.0), plus some room for the labels</span></span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>    <span class="dt">domain</span><span class="op">:</span> d3<span class="op">.</span><span class="fu">geoCircle</span>()<span class="op">.</span><span class="fu">center</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">90</span>])<span class="op">.</span><span class="fu">radius</span>(<span class="fl">1.22</span>)()</span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>  <span class="dt">facet</span><span class="op">:</span> {</span>
-<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>    <span class="dt">data</span><span class="op">:</span> fastdata<span class="op">,</span></span>
-<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">fx</span><span class="op">,</span> <span class="co">//Math.floor(d.algorithm_rank / 4),</span></span>
-<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">fy</span><span class="op">,</span> <span class="co">// d.algorithm_rank % 4,</span></span>
-<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>    <span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span></span>
-<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
-<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fx</span><span class="op">:</span> {<span class="dt">padding</span><span class="op">:</span> <span class="op">.</span><span class="dv">1</span>}<span class="op">,</span></span>
-<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>  <span class="dt">fy</span><span class="op">:</span> {<span class="dt">padding</span><span class="op">:</span> <span class="op">.</span><span class="dv">1</span>}<span class="op">,</span></span>
-<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>  <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Facet name</span></span>
-<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">text</span>(fastdata<span class="op">,</span></span>
-<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">selectFirst</span>({</span>
-<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>          <span class="dt">text</span><span class="op">:</span> <span class="st">"algorithm"</span><span class="op">,</span></span>
-<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>          <span class="dt">frameAnchor</span><span class="op">:</span> <span class="st">"top-left"</span><span class="op">,</span></span>
-<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fontWeight</span><span class="op">:</span> <span class="st">"700"</span><span class="op">,</span></span>
-<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">18</span></span>
-<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>      })</span>
-<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>    )<span class="op">,</span></span>
-<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>    <span class="co">// grey discs</span></span>
-<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">geo</span>([<span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.8</span><span class="op">,</span> <span class="fl">0.6</span><span class="op">,</span> <span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.2</span>]<span class="op">,</span> {</span>
-<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>      <span class="dt">geometry</span><span class="op">:</span> (r) <span class="kw">=&gt;</span> d3<span class="op">.</span><span class="fu">geoCircle</span>()<span class="op">.</span><span class="fu">center</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">90</span>])<span class="op">.</span><span class="fu">radius</span>(r)()<span class="op">,</span></span>
-<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>      <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span></span>
-<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span></span>
-<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>      <span class="dt">strokeOpacity</span><span class="op">:</span> <span class="fl">0.2</span><span class="op">,</span></span>
-<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.03</span><span class="op">,</span></span>
-<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a>      <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">0.5</span></span>
-<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>    })<span class="op">,</span></span>
-<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>    <span class="co">// colored axes</span></span>
-<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">link</span>(longitude<span class="op">.</span><span class="fu">domain</span>()<span class="op">,</span> {</span>
-<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x1</span><span class="op">:</span> longitude<span class="op">,</span></span>
-<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y1</span><span class="op">:</span> <span class="dv">90</span> <span class="op">-</span> <span class="dv">1</span><span class="op">,</span></span>
-<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x2</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y2</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
-<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a>      <span class="dt">stroke</span><span class="op">:</span> d <span class="kw">=&gt;</span> (dataset_types[d] <span class="op">==</span> <span class="st">"in-distribution"</span>)<span class="op">?</span> <span class="st">"#1f77b4"</span> <span class="op">:</span> <span class="st">"#ff7f0e"</span><span class="op">,</span></span>
-<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a>      <span class="dt">strokeOpacity</span><span class="op">:</span> <span class="fl">0.5</span><span class="op">,</span></span>
-<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a>      <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">2.5</span></span>
-<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>    })<span class="op">,</span></span>
-<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a>    <span class="co">// tick labels</span></span>
-<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">text</span>([<span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.6</span><span class="op">,</span> <span class="fl">0.8</span>]<span class="op">,</span> {</span>
-<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fx</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">fy</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> <span class="dv">180</span><span class="op">,</span></span>
-<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> d<span class="op">,</span></span>
-<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a>      <span class="dt">dx</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span></span>
-<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a>      <span class="dt">textAnchor</span><span class="op">:</span> <span class="st">"start"</span><span class="op">,</span></span>
-<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>      <span class="dt">text</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> ( d <span class="op">==</span> <span class="fl">0.8</span> <span class="op">?</span> <span class="vs">`</span><span class="sc">${</span><span class="dv">100</span> <span class="op">*</span> d<span class="sc">}</span><span class="vs">%`</span> <span class="op">:</span> <span class="vs">`</span><span class="sc">${</span><span class="dv">100</span> <span class="op">*</span> d<span class="sc">}</span><span class="vs">%`</span>)<span class="op">,</span></span>
-<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"currentColor"</span><span class="op">,</span></span>
-<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a>      <span class="dt">stroke</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
-<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">14</span></span>
-<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a>    })<span class="op">,</span></span>
-<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a>    <span class="co">// axes labels</span></span>
-<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">text</span>(longitude<span class="op">.</span><span class="fu">domain</span>()<span class="op">,</span> {</span>
-<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fx</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">fy</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> longitude<span class="op">,</span></span>
-<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="dv">90</span> <span class="op">-</span> <span class="fl">1.07</span><span class="op">,</span></span>
-<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a>      <span class="dt">text</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">replaceAll</span>(<span class="st">"-"</span><span class="op">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)<span class="op">,</span></span>
-<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a>      <span class="dt">lineWidth</span><span class="op">:</span> <span class="dv">12</span><span class="op">,</span></span>
-<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>      <span class="dt">lineHeight</span><span class="op">:</span> <span class="fl">1.05</span><span class="op">,</span></span>
-<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">12</span><span class="op">,</span></span>
-<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fontWeight</span><span class="op">:</span> <span class="dv">600</span></span>
-<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a>    })<span class="op">,</span></span>
-<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a>    <span class="co">// axes labels, initials</span></span>
-<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">text</span>(longitude<span class="op">.</span><span class="fu">domain</span>()<span class="op">,</span> {</span>
-<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fx</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">fy</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">facet</span><span class="op">:</span> <span class="st">"exclude"</span><span class="op">,</span></span>
-<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> longitude<span class="op">,</span></span>
-<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> <span class="dv">90</span> <span class="op">-</span> <span class="fl">1.09</span><span class="op">,</span></span>
-<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a>      <span class="dt">text</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span><span class="dv">2</span>)<span class="op">,</span></span>
-<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a>      <span class="dt">lineWidth</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span></span>
-<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a>      <span class="dt">lineHeight</span><span class="op">:</span> <span class="fl">1.05</span><span class="op">,</span></span>
-<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">14</span><span class="op">,</span></span>
-<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fontWeight</span><span class="op">:</span> <span class="dv">600</span></span>
-<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a>    })<span class="op">,</span></span>
-<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a>    <span class="co">// areas</span></span>
-<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">area</span>(fastdata<span class="op">,</span> {</span>
-<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x1</span><span class="op">:</span> ({ dataset }) <span class="kw">=&gt;</span> <span class="fu">longitude</span>(dataset)<span class="op">,</span></span>
-<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y1</span><span class="op">:</span> ({ scaled_qps }) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> scaled_qps<span class="op">,</span></span>
-<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x2</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
-<span id="cb3-246"><a href="#cb3-246" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y2</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
-<span id="cb3-247"><a href="#cb3-247" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> <span class="st">"gray"</span><span class="op">,</span></span>
-<span id="cb3-248"><a href="#cb3-248" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.25</span><span class="op">,</span></span>
-<span id="cb3-249"><a href="#cb3-249" aria-hidden="true" tabindex="-1"></a>      <span class="dt">stroke</span><span class="op">:</span> <span class="st">"gray"</span><span class="op">,</span></span>
-<span id="cb3-250"><a href="#cb3-250" aria-hidden="true" tabindex="-1"></a>      <span class="dt">curve</span><span class="op">:</span> <span class="st">"cardinal-closed"</span></span>
-<span id="cb3-251"><a href="#cb3-251" aria-hidden="true" tabindex="-1"></a>    })<span class="op">,</span></span>
-<span id="cb3-252"><a href="#cb3-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-253"><a href="#cb3-253" aria-hidden="true" tabindex="-1"></a>    <span class="co">// data values</span></span>
-<span id="cb3-254"><a href="#cb3-254" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">dot</span>(fastdata<span class="op">,</span> {</span>
-<span id="cb3-255"><a href="#cb3-255" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="fu">longitude</span>(d<span class="op">.</span><span class="at">dataset</span>)<span class="op">,</span></span>
-<span id="cb3-256"><a href="#cb3-256" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> d<span class="op">.</span><span class="at">scaled_qps</span><span class="op">,</span></span>
-<span id="cb3-257"><a href="#cb3-257" aria-hidden="true" tabindex="-1"></a>      <span class="dt">fill</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> (d<span class="op">.</span><span class="at">dataset_type</span> <span class="op">==</span> <span class="st">"in-distribution"</span>)<span class="op">?</span> <span class="st">"#1f77b4"</span> <span class="op">:</span> <span class="st">"#ff7f0e"</span><span class="op">,</span></span>
-<span id="cb3-258"><a href="#cb3-258" aria-hidden="true" tabindex="-1"></a>      <span class="dt">stroke</span><span class="op">:</span> <span class="st">"white"</span></span>
-<span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a>    })<span class="op">,</span></span>
-<span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a>    <span class="co">// interactive labels</span></span>
-<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>    Plot<span class="op">.</span><span class="fu">text</span>(</span>
-<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>      fastdata<span class="op">,</span></span>
-<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">pointer</span>({</span>
-<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> ({ dataset }) <span class="kw">=&gt;</span> <span class="fu">longitude</span>(dataset)<span class="op">,</span></span>
-<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> ({ scaled_qps }) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> scaled_qps<span class="op">,</span></span>
-<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>        <span class="dt">text</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span><span class="fu">fmt_qps</span>(d<span class="op">.</span><span class="at">qps</span>)<span class="sc">}</span><span class="vs"> qps</span><span class="sc">\n</span><span class="vs">(</span><span class="sc">${</span><span class="bu">Math</span><span class="op">.</span><span class="fu">round</span>(<span class="dv">100</span> <span class="op">*</span> d<span class="op">.</span><span class="at">scaled_qps</span>)<span class="sc">}</span><span class="vs">%)</span><span class="sc">\n${</span>d<span class="op">.</span><span class="at">params</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
-<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a>        <span class="dt">textAnchor</span><span class="op">:</span> <span class="st">"start"</span><span class="op">,</span></span>
-<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>        <span class="dt">dx</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
-<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"currentColor"</span><span class="op">,</span></span>
-<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
-<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>        <span class="dt">maxRadius</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span></span>
-<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">18</span></span>
-<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a>      })</span>
-<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>  ]</span>
-<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code hidden" id="cb3" data-startfrom="208" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 207;"><span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a>  radar_busy<span class="op">;</span> <span class="co">// keep the "computing" overlay up until this figure is ready</span></span>
+<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> plot <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> radar_width<span class="op">,</span></span>
+<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a>    <span class="dt">height</span><span class="op">:</span> radar_height<span class="op">,</span></span>
+<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginTop</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginBottom</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginLeft</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">20</span><span class="op">,</span></span>
+<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a>    <span class="dt">projection</span><span class="op">:</span> {</span>
+<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a>      <span class="dt">type</span><span class="op">:</span> <span class="st">"azimuthal-equidistant"</span><span class="op">,</span></span>
+<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a>      <span class="dt">rotate</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="op">-</span><span class="dv">90</span>]<span class="op">,</span></span>
+<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Note: 1.22° corresponds to max. percentage (1.0), plus some room for the labels</span></span>
+<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a>      <span class="dt">domain</span><span class="op">:</span> d3<span class="op">.</span><span class="fu">geoCircle</span>()<span class="op">.</span><span class="fu">center</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">90</span>])<span class="op">.</span><span class="fu">radius</span>(<span class="fl">1.22</span>)()</span>
+<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a>    <span class="dt">facet</span><span class="op">:</span> {</span>
+<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>      <span class="dt">data</span><span class="op">:</span> fastdata<span class="op">,</span></span>
+<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a>      <span class="dt">y</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">floor</span>(d<span class="op">.</span><span class="at">algorithm_rank</span> <span class="op">/</span> radar_cols)<span class="op">,</span></span>
+<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a>      <span class="dt">x</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">algorithm_rank</span> <span class="op">%</span> radar_cols<span class="op">,</span></span>
+<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a>      <span class="dt">axis</span><span class="op">:</span> <span class="kw">null</span></span>
+<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fx</span><span class="op">:</span> {<span class="dt">padding</span><span class="op">:</span> <span class="op">.</span><span class="dv">1</span>}<span class="op">,</span></span>
+<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a>    <span class="dt">fy</span><span class="op">:</span> {<span class="dt">padding</span><span class="op">:</span> <span class="op">.</span><span class="dv">1</span>}<span class="op">,</span></span>
+<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Facet name</span></span>
+<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">text</span>(fastdata<span class="op">,</span></span>
+<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">selectFirst</span>({</span>
+<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a>            <span class="dt">text</span><span class="op">:</span> <span class="st">"algorithm"</span><span class="op">,</span></span>
+<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a>            <span class="dt">frameAnchor</span><span class="op">:</span> <span class="st">"top-left"</span><span class="op">,</span></span>
+<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a>            <span class="dt">fontWeight</span><span class="op">:</span> <span class="st">"700"</span><span class="op">,</span></span>
+<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a>            <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">18</span></span>
+<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a>      )<span class="op">,</span></span>
+<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a>      <span class="co">// grey discs</span></span>
+<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">geo</span>([<span class="fl">1.0</span><span class="op">,</span> <span class="fl">0.8</span><span class="op">,</span> <span class="fl">0.6</span><span class="op">,</span> <span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.2</span>]<span class="op">,</span> {</span>
+<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a>        <span class="dt">geometry</span><span class="op">:</span> (r) <span class="kw">=&gt;</span> d3<span class="op">.</span><span class="fu">geoCircle</span>()<span class="op">.</span><span class="fu">center</span>([<span class="dv">0</span><span class="op">,</span> <span class="dv">90</span>])<span class="op">.</span><span class="fu">radius</span>(r)()<span class="op">,</span></span>
+<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span></span>
+<span id="cb3-246"><a href="#cb3-246" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"black"</span><span class="op">,</span></span>
+<span id="cb3-247"><a href="#cb3-247" aria-hidden="true" tabindex="-1"></a>        <span class="dt">strokeOpacity</span><span class="op">:</span> <span class="fl">0.2</span><span class="op">,</span></span>
+<span id="cb3-248"><a href="#cb3-248" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.03</span><span class="op">,</span></span>
+<span id="cb3-249"><a href="#cb3-249" aria-hidden="true" tabindex="-1"></a>        <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">0.5</span></span>
+<span id="cb3-250"><a href="#cb3-250" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb3-251"><a href="#cb3-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-252"><a href="#cb3-252" aria-hidden="true" tabindex="-1"></a>      <span class="co">// colored axes</span></span>
+<span id="cb3-253"><a href="#cb3-253" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">link</span>(longitude<span class="op">.</span><span class="fu">domain</span>()<span class="op">,</span> {</span>
+<span id="cb3-254"><a href="#cb3-254" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> longitude<span class="op">,</span></span>
+<span id="cb3-255"><a href="#cb3-255" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> <span class="dv">90</span> <span class="op">-</span> <span class="dv">1</span><span class="op">,</span></span>
+<span id="cb3-256"><a href="#cb3-256" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb3-257"><a href="#cb3-257" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
+<span id="cb3-258"><a href="#cb3-258" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="fu">type_color</span>(dataset_types[d])<span class="op">,</span></span>
+<span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a>        <span class="dt">strokeOpacity</span><span class="op">:</span> <span class="fl">0.5</span><span class="op">,</span></span>
+<span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a>        <span class="dt">strokeWidth</span><span class="op">:</span> <span class="fl">2.5</span></span>
+<span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>      <span class="co">// tick labels</span></span>
+<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">text</span>([<span class="fl">0.4</span><span class="op">,</span> <span class="fl">0.6</span><span class="op">,</span> <span class="fl">0.8</span>]<span class="op">,</span> {</span>
+<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fx</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">fy</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> <span class="dv">180</span><span class="op">,</span></span>
+<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> d<span class="op">,</span></span>
+<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a>        <span class="dt">dx</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span></span>
+<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>        <span class="dt">textAnchor</span><span class="op">:</span> <span class="st">"start"</span><span class="op">,</span></span>
+<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a>        <span class="dt">text</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> ( d <span class="op">==</span> <span class="fl">0.8</span> <span class="op">?</span> <span class="vs">`</span><span class="sc">${</span><span class="dv">100</span> <span class="op">*</span> d<span class="sc">}</span><span class="vs">%`</span> <span class="op">:</span> <span class="vs">`</span><span class="sc">${</span><span class="dv">100</span> <span class="op">*</span> d<span class="sc">}</span><span class="vs">%`</span>)<span class="op">,</span></span>
+<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"currentColor"</span><span class="op">,</span></span>
+<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
+<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">14</span></span>
+<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>      <span class="co">// axes labels</span></span>
+<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">text</span>(longitude<span class="op">.</span><span class="fu">domain</span>()<span class="op">,</span> {</span>
+<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fx</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">fy</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> longitude<span class="op">,</span></span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="dv">90</span> <span class="op">-</span> <span class="fl">1.07</span><span class="op">,</span></span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>        <span class="dt">text</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">replaceAll</span>(<span class="st">"-"</span><span class="op">,</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)<span class="op">,</span></span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>        <span class="dt">lineWidth</span><span class="op">:</span> <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>        <span class="dt">lineHeight</span><span class="op">:</span> <span class="fl">1.05</span><span class="op">,</span></span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">12</span><span class="op">,</span></span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fontWeight</span><span class="op">:</span> <span class="dv">600</span></span>
+<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>      <span class="co">// axes labels, initials</span></span>
+<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">text</span>(longitude<span class="op">.</span><span class="fu">domain</span>()<span class="op">,</span> {</span>
+<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fx</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">fy</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">facet</span><span class="op">:</span> <span class="st">"exclude"</span><span class="op">,</span></span>
+<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> longitude<span class="op">,</span></span>
+<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> <span class="dv">90</span> <span class="op">-</span> <span class="fl">1.09</span><span class="op">,</span></span>
+<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a>        <span class="dt">text</span><span class="op">:</span> d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span><span class="dv">2</span>)<span class="op">,</span></span>
+<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>        <span class="dt">lineWidth</span><span class="op">:</span> <span class="dv">5</span><span class="op">,</span></span>
+<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a>        <span class="dt">lineHeight</span><span class="op">:</span> <span class="fl">1.05</span><span class="op">,</span></span>
+<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">14</span><span class="op">,</span></span>
+<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fontWeight</span><span class="op">:</span> <span class="dv">600</span></span>
+<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>      <span class="co">// areas</span></span>
+<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">area</span>(fastdata<span class="op">,</span> {</span>
+<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x1</span><span class="op">:</span> ({ dataset }) <span class="kw">=&gt;</span> <span class="fu">longitude</span>(dataset)<span class="op">,</span></span>
+<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y1</span><span class="op">:</span> ({ scaled_qps }) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> scaled_qps<span class="op">,</span></span>
+<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x2</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb3-305"><a href="#cb3-305" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y2</span><span class="op">:</span> <span class="dv">90</span><span class="op">,</span></span>
+<span id="cb3-306"><a href="#cb3-306" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> <span class="st">"gray"</span><span class="op">,</span></span>
+<span id="cb3-307"><a href="#cb3-307" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fillOpacity</span><span class="op">:</span> <span class="fl">0.25</span><span class="op">,</span></span>
+<span id="cb3-308"><a href="#cb3-308" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"gray"</span><span class="op">,</span></span>
+<span id="cb3-309"><a href="#cb3-309" aria-hidden="true" tabindex="-1"></a>        <span class="dt">curve</span><span class="op">:</span> <span class="st">"cardinal-closed"</span></span>
+<span id="cb3-310"><a href="#cb3-310" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb3-311"><a href="#cb3-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-312"><a href="#cb3-312" aria-hidden="true" tabindex="-1"></a>      <span class="co">// data values</span></span>
+<span id="cb3-313"><a href="#cb3-313" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>(fastdata<span class="op">,</span> {</span>
+<span id="cb3-314"><a href="#cb3-314" aria-hidden="true" tabindex="-1"></a>        <span class="dt">x</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="fu">longitude</span>(d<span class="op">.</span><span class="at">dataset</span>)<span class="op">,</span></span>
+<span id="cb3-315"><a href="#cb3-315" aria-hidden="true" tabindex="-1"></a>        <span class="dt">y</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> d<span class="op">.</span><span class="at">scaled_qps</span><span class="op">,</span></span>
+<span id="cb3-316"><a href="#cb3-316" aria-hidden="true" tabindex="-1"></a>        <span class="dt">fill</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="fu">type_color</span>(d<span class="op">.</span><span class="at">dataset_type</span>)<span class="op">,</span></span>
+<span id="cb3-317"><a href="#cb3-317" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span> <span class="st">"white"</span></span>
+<span id="cb3-318"><a href="#cb3-318" aria-hidden="true" tabindex="-1"></a>      })<span class="op">,</span></span>
+<span id="cb3-319"><a href="#cb3-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-320"><a href="#cb3-320" aria-hidden="true" tabindex="-1"></a>      <span class="co">// interactive labels</span></span>
+<span id="cb3-321"><a href="#cb3-321" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">text</span>(</span>
+<span id="cb3-322"><a href="#cb3-322" aria-hidden="true" tabindex="-1"></a>        fastdata<span class="op">,</span></span>
+<span id="cb3-323"><a href="#cb3-323" aria-hidden="true" tabindex="-1"></a>        Plot<span class="op">.</span><span class="fu">pointer</span>({</span>
+<span id="cb3-324"><a href="#cb3-324" aria-hidden="true" tabindex="-1"></a>          <span class="dt">x</span><span class="op">:</span> ({ dataset }) <span class="kw">=&gt;</span> <span class="fu">longitude</span>(dataset)<span class="op">,</span></span>
+<span id="cb3-325"><a href="#cb3-325" aria-hidden="true" tabindex="-1"></a>          <span class="dt">y</span><span class="op">:</span> ({ scaled_qps }) <span class="kw">=&gt;</span> <span class="dv">90</span> <span class="op">-</span> scaled_qps<span class="op">,</span></span>
+<span id="cb3-326"><a href="#cb3-326" aria-hidden="true" tabindex="-1"></a>          <span class="dt">text</span><span class="op">:</span> (d) <span class="kw">=&gt;</span> <span class="vs">`</span><span class="sc">${</span><span class="fu">fmt_qps</span>(d<span class="op">.</span><span class="at">qps</span>)<span class="sc">}</span><span class="vs"> qps</span><span class="sc">\n</span><span class="vs">(</span><span class="sc">${</span><span class="bu">Math</span><span class="op">.</span><span class="fu">round</span>(<span class="dv">100</span> <span class="op">*</span> d<span class="op">.</span><span class="at">scaled_qps</span>)<span class="sc">}</span><span class="vs">%)</span><span class="sc">\n${</span>d<span class="op">.</span><span class="at">params</span><span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb3-327"><a href="#cb3-327" aria-hidden="true" tabindex="-1"></a>          <span class="dt">textAnchor</span><span class="op">:</span> <span class="st">"start"</span><span class="op">,</span></span>
+<span id="cb3-328"><a href="#cb3-328" aria-hidden="true" tabindex="-1"></a>          <span class="dt">dx</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb3-329"><a href="#cb3-329" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fill</span><span class="op">:</span> <span class="st">"currentColor"</span><span class="op">,</span></span>
+<span id="cb3-330"><a href="#cb3-330" aria-hidden="true" tabindex="-1"></a>          <span class="dt">stroke</span><span class="op">:</span> <span class="st">"white"</span><span class="op">,</span></span>
+<span id="cb3-331"><a href="#cb3-331" aria-hidden="true" tabindex="-1"></a>          <span class="dt">maxRadius</span><span class="op">:</span> <span class="dv">10</span><span class="op">,</span></span>
+<span id="cb3-332"><a href="#cb3-332" aria-hidden="true" tabindex="-1"></a>          <span class="dt">fontSize</span><span class="op">:</span> <span class="dv">18</span></span>
+<span id="cb3-333"><a href="#cb3-333" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb3-334"><a href="#cb3-334" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb3-335"><a href="#cb3-335" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb3-336"><a href="#cb3-336" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb3-337"><a href="#cb3-337" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-338"><a href="#cb3-338" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_radar_busy</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb3-339"><a href="#cb3-339" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> plot<span class="op">;</span></span>
+<span id="cb3-340"><a href="#cb3-340" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div id="ojs-cell-3" data-nodetype="expression">
 
@@ -577,7 +724,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImRiID0gRHVja0RCQ2xpZW50Lm9mKHtcbiAgc3VtbWFyeTogRmlsZUF0dGFjaG1lbnQoXCJyZXN1bHRzL3N1bW1hcnkucGFycXVldFwiKSxcbiAgc3RhdHM6IEZpbGVBdHRhY2htZW50KFwicmVzdWx0cy9zdGF0cy5wYXJxdWV0XCIpLFxuICBiYXNpY3M6IHtmaWxlOiBGaWxlQXR0YWNobWVudChcImRhdGFzZXRfYmFzaWNzLmNzdlwiKSwgaGVhZGVyOiB0cnVlfSxcbiAgYWxnb3JpdGhtX2Jhc2ljczoge2ZpbGU6IEZpbGVBdHRhY2htZW50KFwiYWxnb3JpdGhtc19iYXNpY3MuY3N2XCIpLCBoZWFkZXI6IHRydWV9XG59KTtcbmtfdmFsdWVzID0gZGIuc3FsYHNlbGVjdCBkaXN0aW5jdCBrIGZyb20gc3VtbWFyeTtgXG5kYXRhc2V0X2NhdGFsb2dfcm93cyA9IGRiLnNxbGBcbiAgc2VsZWN0IGRpc3RpbmN0IGRhdGFzZXQsIHR5cGVcbiAgZnJvbSBiYXNpY3MgbmF0dXJhbCBqb2luIChzZWxlY3QgZGlzdGluY3QgZGF0YXNldCBmcm9tIHN1bW1hcnkpXG5gO1xuZGF0YXNldF9jYXRhbG9nID0gQXJyYXkuZnJvbShkYXRhc2V0X2NhdGFsb2dfcm93cylcbiAgLnNvcnQoKGEsIGIpID0+IHtcbiAgICBjb25zdCBhQWRkaXRpb25hbCA9IGEudHlwZS5lbmRzV2l0aChcIi1hZGRpdGlvbmFsXCIpO1xuICAgIGNvbnN0IGJBZGRpdGlvbmFsID0gYi50eXBlLmVuZHNXaXRoKFwiLWFkZGl0aW9uYWxcIik7XG4gICAgcmV0dXJuIGQzLmFzY2VuZGluZyhhQWRkaXRpb25hbCwgYkFkZGl0aW9uYWwpIHx8IGQzLmFzY2VuZGluZyhhLmRhdGFzZXQsIGIuZGF0YXNldCk7XG4gIH0pO1xuZGVmYXVsdF9kYXRhc2V0cyA9IGRhdGFzZXRfY2F0YWxvZ1xuICAuZmlsdGVyKChkKSA9PiAhZC50eXBlLmVuZHNXaXRoKFwiLWFkZGl0aW9uYWxcIikpXG4gIC5tYXAoKGQpID0+IGQuZGF0YXNldCk7XG52aWV3b2YgcmVjYWxsX3RocmVzaG9sZCA9IElucHV0cy5yYW5nZShbMCwxXSwge3N0ZXA6IDAuMDEsIHZhbHVlOiAwLjk1LCBsYWJlbDogXCJtaW5pbXVtIHJlY2FsbFwifSk7XG52aWV3b2Yga192YWx1ZSA9IElucHV0cy5zZWxlY3Qoa192YWx1ZXMubWFwKGQgPT4gZC5rKSwge3ZhbHVlOiAxMCwgbGFiZWw6IFwidmFsdWUgb2Yga1wifSk7XG52aWV3b2Ygc2VsZWN0ZWRfZGF0YXNldHMgPSB7XG4gIGNvbnN0IGlucHV0ID0gSW5wdXRzLmNoZWNrYm94KGRhdGFzZXRfY2F0YWxvZy5tYXAoKGQpID0+IGQuZGF0YXNldCksIHtcbiAgICBsYWJlbDogXCJkYXRhc2V0c1wiLFxuICAgIHZhbHVlOiBkZWZhdWx0X2RhdGFzZXRzXG4gIH0pO1xuICBpbnB1dC5jbGFzc0xpc3QuYWRkKFwiZGF0YXNldC1zZWxlY3RvclwiKTtcbiAgcmV0dXJuIGlucHV0O1xufVxuc2VsZWN0ZWRfZGF0YXNldF9sb29rdXAgPSBgfCR7c2VsZWN0ZWRfZGF0YXNldHMuam9pbihcInxcIil9fGA7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiIvLyBUaGUgZGF0YSB0byBwbG90XG5mYXN0ZGF0YSA9IGRiLnNxbGBcbiAgd2l0aFxuICAgIG5vcm1hbGl6ZWRfbmFtZXMgYXMgKFxuICAgICAgc2VsZWN0IGssIGRhdGFzZXQsIGFsZ29yaXRobSwgcGFyYW1zLCBxcHMsIHJlY2FsbCBmcm9tIHN1bW1hcnlcbiAgICApLFxuICAgIHNlbGVjdGVkX2RhdGFzZXRzIGFzIChcbiAgICAgIHNlbGVjdCBkYXRhc2V0LCByZWdleHBfcmVwbGFjZSh0eXBlLCAnLWFkZGl0aW9uYWwkJywgJycpIGFzIHR5cGVcbiAgICAgIGZyb20gYmFzaWNzXG4gICAgICB3aGVyZSBjb250YWlucygke3NlbGVjdGVkX2RhdGFzZXRfbG9va3VwfSwgJ3wnIHx8IGRhdGFzZXQgfHwgJ3wnKVxuICAgICksXG4gICAgZmlsdGVyZWRfc3VtbWFyeSBhcyAoXG4gICAgICBzZWxlY3QgKiBmcm9tIG5vcm1hbGl6ZWRfbmFtZXMgbmF0dXJhbCBqb2luIHNlbGVjdGVkX2RhdGFzZXRzIG5hdHVyYWwgbGVmdCBqb2luIGFsZ29yaXRobV9iYXNpY3NcbiAgICAgIHdoZXJlIG5vdCBpc19ncHUgXG4gICAgKSxcbiAgICBhbGxfZGF0YXNldHMgYXMgKCBzZWxlY3QgZGlzdGluY3QgZGF0YXNldCwgdHlwZSBmcm9tIGZpbHRlcmVkX3N1bW1hcnkgKSxcbiAgICBhbGxfYWxnb3JpdGhtcyBhcyAoIHNlbGVjdCBkaXN0aW5jdCBhbGdvcml0aG0gZnJvbSBmaWx0ZXJlZF9zdW1tYXJ5ICksXG4gICAgZXhwZWN0ZWRfY29tYmluYXRpb25zIGFzIChcbiAgICAgIHNlbGVjdCAqXG4gICAgICBmcm9tIGFsbF9kYXRhc2V0cyBjcm9zcyBqb2luIGFsbF9hbGdvcml0aG1zXG4gICAgKSxcbiAgICByYW5rZWQgYXMgKFxuICAgICAgICBzZWxlY3QgKiwgcm93X251bWJlcigpIG92ZXIgKHBhcnRpdGlvbiBieSBhbGdvcml0aG0sIGRhdGFzZXQgb3JkZXIgYnkgcXBzIGRlc2MpIGFzIHJhbmtcbiAgICAgICAgZnJvbSBmaWx0ZXJlZF9zdW1tYXJ5XG4gICAgICAgIHdoZXJlIHJlY2FsbCA+PSAke3JlY2FsbF90aHJlc2hvbGR9IGFuZCBrID0gJHtrX3ZhbHVlfVxuICAgICksXG4gICAgc2NhbGVkIGFzIChcbiAgICAgIHNlbGVjdFxuICAgICAgICAqLFxuICAgICAgICBpZm51bGwocXBzLCAwKSAvIG1heChxcHMpIG92ZXIgKHBhcnRpdGlvbiBieSBkYXRhc2V0LCB0eXBlKSBhcyBzY2FsZWRfcXBzXG4gICAgICBmcm9tIHJhbmtlZFxuICAgICAgICBuYXR1cmFsIHJpZ2h0IGpvaW4gZXhwZWN0ZWRfY29tYmluYXRpb25zXG4gICAgKSxcbiAgICBiZXN0X3BlcmZvcm1pbmcgYXMgKFxuICAgICAgc2VsZWN0IGFsZ29yaXRobSwgZGF0YXNldCwgbWF4KHNjYWxlZF9xcHMpIGFzIGJlc3RfcGVyZm9ybWFuY2VcbiAgICAgIGZyb20gc2NhbGVkXG4gICAgICBncm91cCBieSBhbGxcbiAgICApLFxuICAgIGFsZ29yaXRobXMgYXMgKFxuICAgICAgc2VsZWN0IGFsZ29yaXRobSwgYXZnKGJlc3RfcGVyZm9ybWFuY2UpIGFzIG1lYW5fcGVyZlxuICAgICAgZnJvbSBiZXN0X3BlcmZvcm1pbmdcbiAgICAgIGdyb3VwIGJ5IGFsbFxuICAgICksXG4gICAgYWxnb3JpdGhtc19yYW5rcyBhcyAoXG4gICAgICBzZWxlY3RcbiAgICAgICAgYWxnb3JpdGhtLCBtZWFuX3BlcmYsXG4gICAgICAgIHJvd19udW1iZXIoKSBvdmVyIChvcmRlciBieSBtZWFuX3BlcmYgZGVzYykgYXMgYWxnb3JpdGhtX3JhbmtcbiAgICAgIGZyb20gYWxnb3JpdGhtc1xuICAgICksXG4gICAgZGF0YXNldHMgYXMgKFxuICAgICAgc2VsZWN0IGRhdGFzZXQsIHR5cGUsIGF2ZyhyYzEwMCkgYXMgZGlmZmljdWx0eVxuICAgICAgZnJvbSBzdGF0cyBuYXR1cmFsIGpvaW4gc2VsZWN0ZWRfZGF0YXNldHNcbiAgICAgIGdyb3VwIGJ5IGFsbFxuICAgICksXG4gICAgZGF0YXNldF9yYW5rcyBhcyAoXG4gICAgICBzZWxlY3RcbiAgICAgICAgZGF0YXNldCwgZGlmZmljdWx0eSxcbiAgICAgICAgcm93X251bWJlcigpIG92ZXIgKG9yZGVyIGJ5IHR5cGUsIGNvbnRhaW5zKGRhdGFzZXQsICctaXAnKSwgZGlmZmljdWx0eSBkZXNjKSBhcyBkYXRhc2V0X3JhbmtcbiAgICAgIGZyb20gZGF0YXNldHMgXG4gICAgKVxuICBzZWxlY3RcbiAgICBhbGdvcml0aG0sXG4gICAgcmVnZXhwX3JlcGxhY2UoZGF0YXNldCwgJy1bMC05XSstKGNvc2luZXxub3JtYWxpemVkfGV1Y2xpZGVhbnxpcCknLCAnJykgYXMgZGF0YXNldCxcbiAgICB0eXBlIGFzIGRhdGFzZXRfdHlwZSxcbiAgICBkYXRhc2V0X3JhbmssXG4gICAgayxcbiAgICBzY2FsZWRfcXBzLFxuICAgIHFwcyxcbiAgICBwYXJhbXMsXG4gICAgKGFsZ29yaXRobV9yYW5rIC8gNikgYXMgZngsXG4gICAgKGFsZ29yaXRobV9yYW5rICUgNikgYXMgZnlcbiAgZnJvbSBzY2FsZWQgbmF0dXJhbCBqb2luIGFsZ29yaXRobXNfcmFua3MgbmF0dXJhbCBqb2luIGRhdGFzZXRfcmFua3NcbiAgd2hlcmUgcmFuayA9IDEgb3IgcmFuayBpcyBudWxsXG4gIG9yZGVyIGJ5IGRhdGFzZXRfcmFuaywgYWxnb3JpdGhtLCBxcHM7XG5gXG5cbmZhY2V0X2tleXMgPSBBcnJheS5mcm9tKGQzLnVuaW9uKGZhc3RkYXRhLm1hcCgoZCkgPT4gZC5hbGdvcml0aG0pKSk7XG5cbmRhdGFzZXRfcmFua3MgPSBmYXN0ZGF0YS5yZWR1Y2UoKG1hcCwgZCkgPT4ge1xuICBtYXBbZC5kYXRhc2V0XSA9IGQuZGF0YXNldF9yYW5rO1xuICByZXR1cm4gbWFwO1xufSwge30pO1xuZGF0YXNldF90eXBlcyA9IGZhc3RkYXRhLnJlZHVjZSgobWFwLCBkKSA9PiB7XG4gIG1hcFtkLmRhdGFzZXRdID0gZC5kYXRhc2V0X3R5cGU7XG4gIHJldHVybiBtYXA7XG59LCB7fSk7XG5cbmxvbmdpdHVkZV9kb21haW4gPSBPYmplY3Qua2V5cyhkYXRhc2V0X3JhbmtzKS5zb3J0KChhLCBiKSA9PiBkYXRhc2V0X3JhbmtzW2FdIC0gZGF0YXNldF9yYW5rc1tiXSk7XG5cbi8vIFNjYWxlc1xubG9uZ2l0dWRlID0gZDMuc2NhbGVQb2ludChcbiAgbG9uZ2l0dWRlX2RvbWFpbixcbiAgWzE4MCwgLTE4MF1cbikucGFkZGluZygwLjUpLmFsaWduKDEpO1xuZm10X3FwcyA9IGQzLmZvcm1hdChcIi4yc1wiKTtcbnJhZGFyX3dpZHRoID0gTWF0aC5taW4od2lkdGgsIGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoXCIub3ZlcnZpZXctcmFkYXJzXCIpLmNsaWVudFdpZHRoKTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlBsb3QucGxvdCh7XG4gIHdpZHRoOiByYWRhcl93aWR0aCxcbiAgaGVpZ2h0OiAzKnJhZGFyX3dpZHRoLzQsXG4gIG1hcmdpblRvcDogMjAsXG4gIG1hcmdpbkJvdHRvbTogMjAsXG4gIG1hcmdpbkxlZnQ6IDIwLFxuICBtYXJnaW5SaWdodDogMjAsXG4gIHByb2plY3Rpb246IHtcbiAgICB0eXBlOiBcImF6aW11dGhhbC1lcXVpZGlzdGFudFwiLFxuICAgIHJvdGF0ZTogWzAsIC05MF0sXG4gICAgLy8gTm90ZTogMS4yMsKwIGNvcnJlc3BvbmRzIHRvIG1heC4gcGVyY2VudGFnZSAoMS4wKSwgcGx1cyBzb21lIHJvb20gZm9yIHRoZSBsYWJlbHNcbiAgICBkb21haW46IGQzLmdlb0NpcmNsZSgpLmNlbnRlcihbMCwgOTBdKS5yYWRpdXMoMS4yMikoKVxuICB9LFxuICBmYWNldDoge1xuICAgIGRhdGE6IGZhc3RkYXRhLFxuICAgIHk6IChkKSA9PiBkLmZ4LCAvL01hdGguZmxvb3IoZC5hbGdvcml0aG1fcmFuayAvIDQpLFxuICAgIHg6IChkKSA9PiBkLmZ5LCAvLyBkLmFsZ29yaXRobV9yYW5rICUgNCxcbiAgICBheGlzOiBudWxsXG4gIH0sXG4gIGZ4OiB7cGFkZGluZzogLjF9LFxuICBmeToge3BhZGRpbmc6IC4xfSxcbiAgbWFya3M6IFtcbiAgICAvLyBGYWNldCBuYW1lXG4gICAgUGxvdC50ZXh0KGZhc3RkYXRhLFxuICAgICAgUGxvdC5zZWxlY3RGaXJzdCh7XG4gICAgICAgICAgdGV4dDogXCJhbGdvcml0aG1cIixcbiAgICAgICAgICBmcmFtZUFuY2hvcjogXCJ0b3AtbGVmdFwiLFxuICAgICAgICAgIGZvbnRXZWlnaHQ6IFwiNzAwXCIsXG4gICAgICAgICAgZm9udFNpemU6IDE4XG4gICAgICB9KVxuICAgICksXG5cbiAgICAvLyBncmV5IGRpc2NzXG4gICAgUGxvdC5nZW8oWzEuMCwgMC44LCAwLjYsIDAuNCwgMC4yXSwge1xuICAgICAgZ2VvbWV0cnk6IChyKSA9PiBkMy5nZW9DaXJjbGUoKS5jZW50ZXIoWzAsIDkwXSkucmFkaXVzKHIpKCksXG4gICAgICBzdHJva2U6IFwiYmxhY2tcIixcbiAgICAgIGZpbGw6IFwiYmxhY2tcIixcbiAgICAgIHN0cm9rZU9wYWNpdHk6IDAuMixcbiAgICAgIGZpbGxPcGFjaXR5OiAwLjAzLFxuICAgICAgc3Ryb2tlV2lkdGg6IDAuNVxuICAgIH0pLFxuXG4gICAgLy8gY29sb3JlZCBheGVzXG4gICAgUGxvdC5saW5rKGxvbmdpdHVkZS5kb21haW4oKSwge1xuICAgICAgeDE6IGxvbmdpdHVkZSxcbiAgICAgIHkxOiA5MCAtIDEsXG4gICAgICB4MjogMCxcbiAgICAgIHkyOiA5MCxcbiAgICAgIHN0cm9rZTogZCA9PiAoZGF0YXNldF90eXBlc1tkXSA9PSBcImluLWRpc3RyaWJ1dGlvblwiKT8gXCIjMWY3N2I0XCIgOiBcIiNmZjdmMGVcIixcbiAgICAgIHN0cm9rZU9wYWNpdHk6IDAuNSxcbiAgICAgIHN0cm9rZVdpZHRoOiAyLjVcbiAgICB9KSxcblxuICAgIC8vIHRpY2sgbGFiZWxzXG4gICAgUGxvdC50ZXh0KFswLjQsIDAuNiwgMC44XSwge1xuICAgICAgZng6IDAsIGZ5OiAwLFxuICAgICAgeDogMTgwLFxuICAgICAgeTogKGQpID0+IDkwIC0gZCxcbiAgICAgIGR4OiAyLFxuICAgICAgdGV4dEFuY2hvcjogXCJzdGFydFwiLFxuICAgICAgdGV4dDogKGQpID0+ICggZCA9PSAwLjggPyBgJHsxMDAgKiBkfSVgIDogYCR7MTAwICogZH0lYCksXG4gICAgICBmaWxsOiBcImN1cnJlbnRDb2xvclwiLFxuICAgICAgc3Ryb2tlOiBcIndoaXRlXCIsXG4gICAgICBmb250U2l6ZTogMTRcbiAgICB9KSxcblxuICAgIC8vIGF4ZXMgbGFiZWxzXG4gICAgUGxvdC50ZXh0KGxvbmdpdHVkZS5kb21haW4oKSwge1xuICAgICAgZng6IDAsIGZ5OiAwLFxuICAgICAgeDogbG9uZ2l0dWRlLFxuICAgICAgeTogOTAgLSAxLjA3LFxuICAgICAgdGV4dDogKGQpID0+IGQucmVwbGFjZUFsbChcIi1cIiwgXCJcXG5cIiksXG4gICAgICBsaW5lV2lkdGg6IDEyLFxuICAgICAgbGluZUhlaWdodDogMS4wNSxcbiAgICAgIGZvbnRTaXplOiAxMixcbiAgICAgIGZvbnRXZWlnaHQ6IDYwMFxuICAgIH0pLFxuXG4gICAgLy8gYXhlcyBsYWJlbHMsIGluaXRpYWxzXG4gICAgUGxvdC50ZXh0KGxvbmdpdHVkZS5kb21haW4oKSwge1xuICAgICAgZng6IDAsIGZ5OiAwLCBmYWNldDogXCJleGNsdWRlXCIsXG4gICAgICB4OiBsb25naXR1ZGUsXG4gICAgICB5OiA5MCAtIDEuMDksXG4gICAgICB0ZXh0OiBkID0+IGQuc2xpY2UoMCwyKSxcbiAgICAgIGxpbmVXaWR0aDogNSxcbiAgICAgIGxpbmVIZWlnaHQ6IDEuMDUsXG4gICAgICBmb250U2l6ZTogMTQsXG4gICAgICBmb250V2VpZ2h0OiA2MDBcbiAgICB9KSxcblxuICAgIC8vIGFyZWFzXG4gICAgUGxvdC5hcmVhKGZhc3RkYXRhLCB7XG4gICAgICB4MTogKHsgZGF0YXNldCB9KSA9PiBsb25naXR1ZGUoZGF0YXNldCksXG4gICAgICB5MTogKHsgc2NhbGVkX3FwcyB9KSA9PiA5MCAtIHNjYWxlZF9xcHMsXG4gICAgICB4MjogMCxcbiAgICAgIHkyOiA5MCxcbiAgICAgIGZpbGw6IFwiZ3JheVwiLFxuICAgICAgZmlsbE9wYWNpdHk6IDAuMjUsXG4gICAgICBzdHJva2U6IFwiZ3JheVwiLFxuICAgICAgY3VydmU6IFwiY2FyZGluYWwtY2xvc2VkXCJcbiAgICB9KSxcblxuICAgIC8vIGRhdGEgdmFsdWVzXG4gICAgUGxvdC5kb3QoZmFzdGRhdGEsIHtcbiAgICAgIHg6IChkKSA9PiBsb25naXR1ZGUoZC5kYXRhc2V0KSxcbiAgICAgIHk6IChkKSA9PiA5MCAtIGQuc2NhbGVkX3FwcyxcbiAgICAgIGZpbGw6IChkKSA9PiAoZC5kYXRhc2V0X3R5cGUgPT0gXCJpbi1kaXN0cmlidXRpb25cIik/IFwiIzFmNzdiNFwiIDogXCIjZmY3ZjBlXCIsXG4gICAgICBzdHJva2U6IFwid2hpdGVcIlxuICAgIH0pLFxuXG4gICAgLy8gaW50ZXJhY3RpdmUgbGFiZWxzXG4gICAgUGxvdC50ZXh0KFxuICAgICAgZmFzdGRhdGEsXG4gICAgICBQbG90LnBvaW50ZXIoe1xuICAgICAgICB4OiAoeyBkYXRhc2V0IH0pID0+IGxvbmdpdHVkZShkYXRhc2V0KSxcbiAgICAgICAgeTogKHsgc2NhbGVkX3FwcyB9KSA9PiA5MCAtIHNjYWxlZF9xcHMsXG4gICAgICAgIHRleHQ6IChkKSA9PiBgJHtmbXRfcXBzKGQucXBzKX0gcXBzXFxuKCR7TWF0aC5yb3VuZCgxMDAgKiBkLnNjYWxlZF9xcHMpfSUpXFxuJHtkLnBhcmFtc31gLFxuICAgICAgICB0ZXh0QW5jaG9yOiBcInN0YXJ0XCIsXG4gICAgICAgIGR4OiA0LFxuICAgICAgICBmaWxsOiBcImN1cnJlbnRDb2xvclwiLFxuICAgICAgICBzdHJva2U6IFwid2hpdGVcIixcbiAgICAgICAgbWF4UmFkaXVzOiAxMCxcbiAgICAgICAgZm9udFNpemU6IDE4XG4gICAgICB9KVxuICAgIClcbiAgICBcbiAgXVxufSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncmVjYWxsX3RocmVzaG9sZCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdrX3ZhbHVlJykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3NlbGVjdGVkX2RhdGFzZXRzJykifV19
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6ImRiID0gRHVja0RCQ2xpZW50Lm9mKHtcbiAgc3VtbWFyeTogRmlsZUF0dGFjaG1lbnQoXCJyZXN1bHRzL3N1bW1hcnkucGFycXVldFwiKSxcbiAgc3RhdHM6IEZpbGVBdHRhY2htZW50KFwicmVzdWx0cy9zdGF0cy5wYXJxdWV0XCIpLFxuICBiYXNpY3M6IHtmaWxlOiBGaWxlQXR0YWNobWVudChcImRhdGFzZXRfYmFzaWNzLmNzdlwiKSwgaGVhZGVyOiB0cnVlfSxcbiAgYWxnb3JpdGhtX2Jhc2ljczoge2ZpbGU6IEZpbGVBdHRhY2htZW50KFwiYWxnb3JpdGhtc19iYXNpY3MuY3N2XCIpLCBoZWFkZXI6IHRydWV9XG59KTtcbmtfdmFsdWVzID0gZGIuc3FsYHNlbGVjdCBkaXN0aW5jdCBrIGZyb20gc3VtbWFyeTtgXG5kYXRhc2V0X2NhdGFsb2dfcm93cyA9IGRiLnNxbGBcbiAgc2VsZWN0IGRpc3RpbmN0IGRhdGFzZXQsIHR5cGVcbiAgZnJvbSBiYXNpY3MgbmF0dXJhbCBqb2luIChzZWxlY3QgZGlzdGluY3QgZGF0YXNldCBmcm9tIHN1bW1hcnkpXG5gO1xuZGF0YXNldF9jYXRhbG9nID0gQXJyYXkuZnJvbShkYXRhc2V0X2NhdGFsb2dfcm93cylcbiAgLnNvcnQoKGEsIGIpID0+IHtcbiAgICBjb25zdCBhQWRkaXRpb25hbCA9IGEudHlwZS5lbmRzV2l0aChcIi1hZGRpdGlvbmFsXCIpO1xuICAgIGNvbnN0IGJBZGRpdGlvbmFsID0gYi50eXBlLmVuZHNXaXRoKFwiLWFkZGl0aW9uYWxcIik7XG4gICAgcmV0dXJuIGQzLmFzY2VuZGluZyhhQWRkaXRpb25hbCwgYkFkZGl0aW9uYWwpIHx8IGQzLmFzY2VuZGluZyhhLmRhdGFzZXQsIGIuZGF0YXNldCk7XG4gIH0pO1xuZGVmYXVsdF9kYXRhc2V0cyA9IGRhdGFzZXRfY2F0YWxvZ1xuICAuZmlsdGVyKChkKSA9PiAhZC50eXBlLmVuZHNXaXRoKFwiLWFkZGl0aW9uYWxcIikpXG4gIC5tYXAoKGQpID0+IGQuZGF0YXNldCk7XG5kYXRhc2V0X3R5cGVzMSA9IGRhdGFzZXRfY2F0YWxvZy5yZWR1Y2UoKG1hcCwgZCkgPT4ge1xuICBtYXBbZC5kYXRhc2V0XSA9IGQudHlwZS5yZXBsYWNlKC8tYWRkaXRpb25hbCQvLCBcIlwiKTtcbiAgcmV0dXJuIG1hcDtcbn0sIHt9KTtcblxuLy8gQ29sb3VyIGVuY29kaW5nIHNoYXJlZCBieSB0aGUgZGF0YXNldCBzZWxlY3RvciBhbmQgdGhlIHJhZGFyIHBsb3RzLlxudHlwZV9jb2xvciA9ICh0KSA9PiAodCA9PSBcImluLWRpc3RyaWJ1dGlvblwiKSA/IFwiIzFmNzdiNFwiIDogXCIjZmY3ZjBlXCI7XG5zd2F0Y2ggPSAodCkgPT4gaHRtbGA8c3BhbiBzdHlsZT1cIlxuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICB3aWR0aDogMS40ZXg7XG4gICAgaGVpZ2h0OiAxLjRleDtcbiAgICBmbGV4OiBub25lO1xuICAgIGJvcmRlci1yYWRpdXM6IDJweDtcbiAgICBiYWNrZ3JvdW5kOiAke3R5cGVfY29sb3IodCl9O1xuICBcIj48L3NwYW4+YDtcbnN3YXRjaF9sYWJlbCA9ICh0LCB0ZXh0KSA9PiBodG1sYDxzcGFuIHN0eWxlPVwiXG4gICAgZGlzcGxheTogaW5saW5lLWZsZXg7IGFsaWduLWl0ZW1zOiBjZW50ZXI7IGdhcDogMC42ZXg7XG4gIFwiPiR7c3dhdGNoKHQpfSR7dGV4dH08L3NwYW4+YDtcblxudmlld29mIHJlY2FsbF90aHJlc2hvbGQgPSBJbnB1dHMucmFuZ2UoWzAsMV0sIHtzdGVwOiAwLjAxLCB2YWx1ZTogMC45NSwgbGFiZWw6IFwibWluaW11bSByZWNhbGxcIn0pO1xudmlld29mIGtfdmFsdWUgPSBJbnB1dHMuc2VsZWN0KGtfdmFsdWVzLm1hcChkID0+IGQuayksIHt2YWx1ZTogMTAsIGxhYmVsOiBcInZhbHVlIG9mIGtcIn0pO1xudmlld29mIHNlbGVjdGVkX2RhdGFzZXRzID0ge1xuICBjb25zdCBpbnB1dCA9IElucHV0cy5jaGVja2JveChkYXRhc2V0X2NhdGFsb2cubWFwKChkKSA9PiBkLmRhdGFzZXQpLCB7XG4gICAgbGFiZWw6IGh0bWxgPHNwYW4gc3R5bGU9XCJkaXNwbGF5OiBmbGV4OyBmbGV4LXdyYXA6IHdyYXA7IGFsaWduLWl0ZW1zOiBiYXNlbGluZTsgY29sdW1uLWdhcDogMS4yZXg7IHJvdy1nYXA6IDAuMnJlbTtcIj5kYXRhc2V0czxzcGFuIHN0eWxlPVwiXG4gICAgICAgIGRpc3BsYXk6IGZsZXg7IGZsZXgtd3JhcDogd3JhcDsgY29sdW1uLWdhcDogMS4yZXg7IHJvdy1nYXA6IDAuMnJlbTtcbiAgICAgICAgZm9udC13ZWlnaHQ6IDQwMDsgZm9udC1zaXplOiAwLjg1ZW07XG4gICAgICBcIj4ke3N3YXRjaF9sYWJlbChcImluLWRpc3RyaWJ1dGlvblwiLCBcImluLWRpc3RyaWJ1dGlvblwiKX0ke3N3YXRjaF9sYWJlbChcIm91dC1vZi1kaXN0cmlidXRpb25cIiwgXCJvdXQtb2YtZGlzdHJpYnV0aW9uXCIpfTwvc3Bhbj48L3NwYW4+YCxcbiAgICBmb3JtYXQ6ICh4KSA9PiBzd2F0Y2hfbGFiZWwoZGF0YXNldF90eXBlczFbeF0sIHgpLFxuICAgIHZhbHVlOiBkZWZhdWx0X2RhdGFzZXRzXG4gIH0pO1xuICBpbnB1dC5jbGFzc0xpc3QuYWRkKFwiZGF0YXNldC1zZWxlY3RvclwiKTtcbiAgcmV0dXJuIGlucHV0O1xufVxuc2VsZWN0ZWRfZGF0YXNldF9sb29rdXAgPSBgfCR7c2VsZWN0ZWRfZGF0YXNldHMuam9pbihcInxcIil9fGA7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiIvLyBUaGUgZGF0YSB0byBwbG90XG5mYXN0ZGF0YSA9IGRiLnNxbGBcbiAgd2l0aFxuICAgIG5vcm1hbGl6ZWRfbmFtZXMgYXMgKFxuICAgICAgc2VsZWN0IGssIGRhdGFzZXQsIGFsZ29yaXRobSwgcGFyYW1zLCBxcHMsIHJlY2FsbCBmcm9tIHN1bW1hcnlcbiAgICApLFxuICAgIHNlbGVjdGVkX2RhdGFzZXRzIGFzIChcbiAgICAgIHNlbGVjdCBkYXRhc2V0LCByZWdleHBfcmVwbGFjZSh0eXBlLCAnLWFkZGl0aW9uYWwkJywgJycpIGFzIHR5cGVcbiAgICAgIGZyb20gYmFzaWNzXG4gICAgICB3aGVyZSBjb250YWlucygke3NlbGVjdGVkX2RhdGFzZXRfbG9va3VwfSwgJ3wnIHx8IGRhdGFzZXQgfHwgJ3wnKVxuICAgICksXG4gICAgZmlsdGVyZWRfc3VtbWFyeSBhcyAoXG4gICAgICBzZWxlY3QgKiBmcm9tIG5vcm1hbGl6ZWRfbmFtZXMgbmF0dXJhbCBqb2luIHNlbGVjdGVkX2RhdGFzZXRzIG5hdHVyYWwgbGVmdCBqb2luIGFsZ29yaXRobV9iYXNpY3NcbiAgICAgIHdoZXJlIG5vdCBpc19ncHUgXG4gICAgKSxcbiAgICBhbGxfZGF0YXNldHMgYXMgKCBzZWxlY3QgZGlzdGluY3QgZGF0YXNldCwgdHlwZSBmcm9tIGZpbHRlcmVkX3N1bW1hcnkgKSxcbiAgICBhbGxfYWxnb3JpdGhtcyBhcyAoIHNlbGVjdCBkaXN0aW5jdCBhbGdvcml0aG0gZnJvbSBmaWx0ZXJlZF9zdW1tYXJ5ICksXG4gICAgZXhwZWN0ZWRfY29tYmluYXRpb25zIGFzIChcbiAgICAgIHNlbGVjdCAqXG4gICAgICBmcm9tIGFsbF9kYXRhc2V0cyBjcm9zcyBqb2luIGFsbF9hbGdvcml0aG1zXG4gICAgKSxcbiAgICByYW5rZWQgYXMgKFxuICAgICAgICBzZWxlY3QgKiwgcm93X251bWJlcigpIG92ZXIgKHBhcnRpdGlvbiBieSBhbGdvcml0aG0sIGRhdGFzZXQgb3JkZXIgYnkgcXBzIGRlc2MpIGFzIHJhbmtcbiAgICAgICAgZnJvbSBmaWx0ZXJlZF9zdW1tYXJ5XG4gICAgICAgIHdoZXJlIHJlY2FsbCA+PSAke3JlY2FsbF90aHJlc2hvbGR9IGFuZCBrID0gJHtrX3ZhbHVlfVxuICAgICksXG4gICAgc2NhbGVkIGFzIChcbiAgICAgIHNlbGVjdFxuICAgICAgICAqLFxuICAgICAgICBpZm51bGwocXBzLCAwKSAvIG1heChxcHMpIG92ZXIgKHBhcnRpdGlvbiBieSBkYXRhc2V0LCB0eXBlKSBhcyBzY2FsZWRfcXBzXG4gICAgICBmcm9tIHJhbmtlZFxuICAgICAgICBuYXR1cmFsIHJpZ2h0IGpvaW4gZXhwZWN0ZWRfY29tYmluYXRpb25zXG4gICAgKSxcbiAgICBiZXN0X3BlcmZvcm1pbmcgYXMgKFxuICAgICAgc2VsZWN0IGFsZ29yaXRobSwgZGF0YXNldCwgbWF4KHNjYWxlZF9xcHMpIGFzIGJlc3RfcGVyZm9ybWFuY2VcbiAgICAgIGZyb20gc2NhbGVkXG4gICAgICBncm91cCBieSBhbGxcbiAgICApLFxuICAgIGFsZ29yaXRobXMgYXMgKFxuICAgICAgc2VsZWN0IGFsZ29yaXRobSwgYXZnKGJlc3RfcGVyZm9ybWFuY2UpIGFzIG1lYW5fcGVyZlxuICAgICAgZnJvbSBiZXN0X3BlcmZvcm1pbmdcbiAgICAgIGdyb3VwIGJ5IGFsbFxuICAgICksXG4gICAgYWxnb3JpdGhtc19yYW5rcyBhcyAoXG4gICAgICBzZWxlY3RcbiAgICAgICAgYWxnb3JpdGhtLCBtZWFuX3BlcmYsXG4gICAgICAgIHJvd19udW1iZXIoKSBvdmVyIChvcmRlciBieSBtZWFuX3BlcmYgZGVzYykgYXMgYWxnb3JpdGhtX3JhbmtcbiAgICAgIGZyb20gYWxnb3JpdGhtc1xuICAgICksXG4gICAgZGF0YXNldHMgYXMgKFxuICAgICAgc2VsZWN0IGRhdGFzZXQsIHR5cGUsIGF2ZyhyYzEwMCkgYXMgZGlmZmljdWx0eVxuICAgICAgZnJvbSBzdGF0cyBuYXR1cmFsIGpvaW4gc2VsZWN0ZWRfZGF0YXNldHNcbiAgICAgIGdyb3VwIGJ5IGFsbFxuICAgICksXG4gICAgZGF0YXNldF9yYW5rcyBhcyAoXG4gICAgICBzZWxlY3RcbiAgICAgICAgZGF0YXNldCwgZGlmZmljdWx0eSxcbiAgICAgICAgcm93X251bWJlcigpIG92ZXIgKG9yZGVyIGJ5IHR5cGUsIGNvbnRhaW5zKGRhdGFzZXQsICctaXAnKSwgZGlmZmljdWx0eSBkZXNjKSBhcyBkYXRhc2V0X3JhbmtcbiAgICAgIGZyb20gZGF0YXNldHMgXG4gICAgKVxuICBzZWxlY3RcbiAgICBhbGdvcml0aG0sXG4gICAgcmVnZXhwX3JlcGxhY2UoZGF0YXNldCwgJy1bMC05XSstKGNvc2luZXxub3JtYWxpemVkfGV1Y2xpZGVhbnxpcCknLCAnJykgYXMgZGF0YXNldCxcbiAgICB0eXBlIGFzIGRhdGFzZXRfdHlwZSxcbiAgICBkYXRhc2V0X3JhbmssXG4gICAgayxcbiAgICBzY2FsZWRfcXBzLFxuICAgIHFwcyxcbiAgICBwYXJhbXMsXG4gICAgLS0gY2FzdCB0byBJTlRFR0VSIHNvIHRoYXQgaXQgcmVhY2hlcyBPYnNlcnZhYmxlIGFzIGEgbnVtYmVyLCBub3QgYSBCaWdJbnRcbiAgICBjYXN0KGFsZ29yaXRobV9yYW5rIGFzIGludGVnZXIpIGFzIGFsZ29yaXRobV9yYW5rXG4gIGZyb20gc2NhbGVkIG5hdHVyYWwgam9pbiBhbGdvcml0aG1zX3JhbmtzIG5hdHVyYWwgam9pbiBkYXRhc2V0X3JhbmtzXG4gIHdoZXJlIHJhbmsgPSAxIG9yIHJhbmsgaXMgbnVsbFxuICBvcmRlciBieSBkYXRhc2V0X3JhbmssIGFsZ29yaXRobSwgcXBzO1xuYFxuXG5mYWNldF9rZXlzID0gQXJyYXkuZnJvbShkMy51bmlvbihmYXN0ZGF0YS5tYXAoKGQpID0+IGQuYWxnb3JpdGhtKSkpO1xuXG5kYXRhc2V0X3JhbmtzID0gZmFzdGRhdGEucmVkdWNlKChtYXAsIGQpID0+IHtcbiAgbWFwW2QuZGF0YXNldF0gPSBkLmRhdGFzZXRfcmFuaztcbiAgcmV0dXJuIG1hcDtcbn0sIHt9KTtcbmRhdGFzZXRfdHlwZXMgPSBmYXN0ZGF0YS5yZWR1Y2UoKG1hcCwgZCkgPT4ge1xuICBtYXBbZC5kYXRhc2V0XSA9IGQuZGF0YXNldF90eXBlO1xuICByZXR1cm4gbWFwO1xufSwge30pO1xuXG5sb25naXR1ZGVfZG9tYWluID0gT2JqZWN0LmtleXMoZGF0YXNldF9yYW5rcykuc29ydCgoYSwgYikgPT4gZGF0YXNldF9yYW5rc1thXSAtIGRhdGFzZXRfcmFua3NbYl0pO1xuXG4vLyBTY2FsZXNcbmxvbmdpdHVkZSA9IGQzLnNjYWxlUG9pbnQoXG4gIGxvbmdpdHVkZV9kb21haW4sXG4gIFsxODAsIC0xODBdXG4pLnBhZGRpbmcoMC41KS5hbGlnbigxKTtcbmZtdF9xcHMgPSBkMy5mb3JtYXQoXCIuMnNcIik7XG5yYWRhcl93aWR0aCA9IE1hdGgubWluKHdpZHRoLCBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiLm92ZXJ2aWV3LXJhZGFyc1wiKS5jbGllbnRXaWR0aCk7XG5cbi8vIEdyaWQgZ2VvbWV0cnksIHJlY29tcHV0ZWQgd2hlbmV2ZXIgdGhlIHBhbmUgaXMgcmVzaXplZDogZml0IGFzIG1hbnkgcmFkYXJzXG4vLyBwZXIgcm93IGFzIHBvc3NpYmxlIHdoaWxlIGtlZXBpbmcgZWFjaCBjZWxsIHdpZGUgZW5vdWdoIHRvIHN0YXkgcmVhZGFibGUuXG4vLyBDZWxsIDAgaXMgdGhlIGxlZ2VuZCAodGhlIGVtcHR5IGZhY2V0IGNhcnJ5aW5nIHRoZSBmdWxsIGF4aXMgbGFiZWxzKSwgc28gdGhlXG4vLyBncmlkIGhhcyB0byBob2xkIG9uZSBjZWxsIG1vcmUgdGhhbiB0aGVyZSBhcmUgYWxnb3JpdGhtcy5cbnJhZGFyX2NlbGxfbWluX3dpZHRoID0gMTkwO1xucmFkYXJfY2VsbF9hc3BlY3QgPSAxLjE7XG5yYWRhcl9jZWxscyA9IGZhY2V0X2tleXMubGVuZ3RoICsgMTtcbnJhZGFyX2NvbHMgPSBNYXRoLm1heCgyLCBNYXRoLm1pbihyYWRhcl9jZWxscyAtIDEsIE1hdGgucm91bmQocmFkYXJfd2lkdGggLyByYWRhcl9jZWxsX21pbl93aWR0aCkpKTtcbnJhZGFyX3Jvd3MgPSBNYXRoLmNlaWwocmFkYXJfY2VsbHMgLyByYWRhcl9jb2xzKTtcbnJhZGFyX2hlaWdodCA9IHJhZGFyX3Jvd3MgKiAocmFkYXJfd2lkdGggLyByYWRhcl9jb2xzKSAqIHJhZGFyX2NlbGxfYXNwZWN0O1xuXG4vLyBCdXN5IGluZGljYXRvcjogdGhlIHBhbmUgaXMgZmxhZ2dlZCBhcyBzb29uIGFzIG9uZSBvZiB0aGUgY29udHJvbHMgY2hhbmdlcyxcbi8vIGFuZCB0aGUgZmxhZyBpcyBjbGVhcmVkIGFnYWluIGJ5IHRoZSBwbG90IGNlbGwsIG9uY2UgdGhlIHJlY29tcHV0ZWQgZGF0YSBoYXNcbi8vIG1hZGUgaXQgYWxsIHRoZSB3YXkgdG8gYSBuZXcgZmlndXJlLlxucmFkYXJfcGFuZSA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoXCIub3ZlcnZpZXctcmFkYXJzXCIpO1xuc2V0X3JhZGFyX2J1c3kgPSBmdW5jdGlvbihidXN5KSB7XG4gIGlmIChyYWRhcl9wYW5lKSByYWRhcl9wYW5lLmNsYXNzTGlzdC50b2dnbGUoXCJpcy1jb21wdXRpbmdcIiwgYnVzeSk7XG4gIHJldHVybiBidXN5O1xufVxucmFkYXJfYnVzeSA9IHtcbiAgLy8gRGVwZW5kIG9uIHRoZSBjb250cm9scyAocmF0aGVyIHRoYW4gb24gdGhlIHF1ZXJ5IHJlc3VsdCkgc28gdGhhdCB0aGlzIHJ1bnNcbiAgLy8gc3luY2hyb25vdXNseSwgd2hpbGUgdGhlIER1Y2tEQiBxdWVyeSBiZWhpbmQgYGZhc3RkYXRhYCBpcyBzdGlsbCBwZW5kaW5nLlxuICByZWNhbGxfdGhyZXNob2xkO1xuICBrX3ZhbHVlO1xuICBzZWxlY3RlZF9kYXRhc2V0X2xvb2t1cDtcbiAgcmV0dXJuIHNldF9yYWRhcl9idXN5KHRydWUpO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoie1xuICByYWRhcl9idXN5OyAvLyBrZWVwIHRoZSBcImNvbXB1dGluZ1wiIG92ZXJsYXkgdXAgdW50aWwgdGhpcyBmaWd1cmUgaXMgcmVhZHlcbiAgY29uc3QgcGxvdCA9IFBsb3QucGxvdCh7XG4gICAgd2lkdGg6IHJhZGFyX3dpZHRoLFxuICAgIGhlaWdodDogcmFkYXJfaGVpZ2h0LFxuICAgIG1hcmdpblRvcDogMjAsXG4gICAgbWFyZ2luQm90dG9tOiAyMCxcbiAgICBtYXJnaW5MZWZ0OiAyMCxcbiAgICBtYXJnaW5SaWdodDogMjAsXG4gICAgcHJvamVjdGlvbjoge1xuICAgICAgdHlwZTogXCJhemltdXRoYWwtZXF1aWRpc3RhbnRcIixcbiAgICAgIHJvdGF0ZTogWzAsIC05MF0sXG4gICAgICAvLyBOb3RlOiAxLjIywrAgY29ycmVzcG9uZHMgdG8gbWF4LiBwZXJjZW50YWdlICgxLjApLCBwbHVzIHNvbWUgcm9vbSBmb3IgdGhlIGxhYmVsc1xuICAgICAgZG9tYWluOiBkMy5nZW9DaXJjbGUoKS5jZW50ZXIoWzAsIDkwXSkucmFkaXVzKDEuMjIpKClcbiAgICB9LFxuICAgIGZhY2V0OiB7XG4gICAgICBkYXRhOiBmYXN0ZGF0YSxcbiAgICAgIHk6IChkKSA9PiBNYXRoLmZsb29yKGQuYWxnb3JpdGhtX3JhbmsgLyByYWRhcl9jb2xzKSxcbiAgICAgIHg6IChkKSA9PiBkLmFsZ29yaXRobV9yYW5rICUgcmFkYXJfY29scyxcbiAgICAgIGF4aXM6IG51bGxcbiAgICB9LFxuICAgIGZ4OiB7cGFkZGluZzogLjF9LFxuICAgIGZ5OiB7cGFkZGluZzogLjF9LFxuICAgIG1hcmtzOiBbXG4gICAgICAvLyBGYWNldCBuYW1lXG4gICAgICBQbG90LnRleHQoZmFzdGRhdGEsXG4gICAgICAgIFBsb3Quc2VsZWN0Rmlyc3Qoe1xuICAgICAgICAgICAgdGV4dDogXCJhbGdvcml0aG1cIixcbiAgICAgICAgICAgIGZyYW1lQW5jaG9yOiBcInRvcC1sZWZ0XCIsXG4gICAgICAgICAgICBmb250V2VpZ2h0OiBcIjcwMFwiLFxuICAgICAgICAgICAgZm9udFNpemU6IDE4XG4gICAgICAgIH0pXG4gICAgICApLFxuXG4gICAgICAvLyBncmV5IGRpc2NzXG4gICAgICBQbG90LmdlbyhbMS4wLCAwLjgsIDAuNiwgMC40LCAwLjJdLCB7XG4gICAgICAgIGdlb21ldHJ5OiAocikgPT4gZDMuZ2VvQ2lyY2xlKCkuY2VudGVyKFswLCA5MF0pLnJhZGl1cyhyKSgpLFxuICAgICAgICBzdHJva2U6IFwiYmxhY2tcIixcbiAgICAgICAgZmlsbDogXCJibGFja1wiLFxuICAgICAgICBzdHJva2VPcGFjaXR5OiAwLjIsXG4gICAgICAgIGZpbGxPcGFjaXR5OiAwLjAzLFxuICAgICAgICBzdHJva2VXaWR0aDogMC41XG4gICAgICB9KSxcblxuICAgICAgLy8gY29sb3JlZCBheGVzXG4gICAgICBQbG90LmxpbmsobG9uZ2l0dWRlLmRvbWFpbigpLCB7XG4gICAgICAgIHgxOiBsb25naXR1ZGUsXG4gICAgICAgIHkxOiA5MCAtIDEsXG4gICAgICAgIHgyOiAwLFxuICAgICAgICB5MjogOTAsXG4gICAgICAgIHN0cm9rZTogKGQpID0+IHR5cGVfY29sb3IoZGF0YXNldF90eXBlc1tkXSksXG4gICAgICAgIHN0cm9rZU9wYWNpdHk6IDAuNSxcbiAgICAgICAgc3Ryb2tlV2lkdGg6IDIuNVxuICAgICAgfSksXG5cbiAgICAgIC8vIHRpY2sgbGFiZWxzXG4gICAgICBQbG90LnRleHQoWzAuNCwgMC42LCAwLjhdLCB7XG4gICAgICAgIGZ4OiAwLCBmeTogMCxcbiAgICAgICAgeDogMTgwLFxuICAgICAgICB5OiAoZCkgPT4gOTAgLSBkLFxuICAgICAgICBkeDogMixcbiAgICAgICAgdGV4dEFuY2hvcjogXCJzdGFydFwiLFxuICAgICAgICB0ZXh0OiAoZCkgPT4gKCBkID09IDAuOCA/IGAkezEwMCAqIGR9JWAgOiBgJHsxMDAgKiBkfSVgKSxcbiAgICAgICAgZmlsbDogXCJjdXJyZW50Q29sb3JcIixcbiAgICAgICAgc3Ryb2tlOiBcIndoaXRlXCIsXG4gICAgICAgIGZvbnRTaXplOiAxNFxuICAgICAgfSksXG5cbiAgICAgIC8vIGF4ZXMgbGFiZWxzXG4gICAgICBQbG90LnRleHQobG9uZ2l0dWRlLmRvbWFpbigpLCB7XG4gICAgICAgIGZ4OiAwLCBmeTogMCxcbiAgICAgICAgeDogbG9uZ2l0dWRlLFxuICAgICAgICB5OiA5MCAtIDEuMDcsXG4gICAgICAgIHRleHQ6IChkKSA9PiBkLnJlcGxhY2VBbGwoXCItXCIsIFwiXFxuXCIpLFxuICAgICAgICBsaW5lV2lkdGg6IDEyLFxuICAgICAgICBsaW5lSGVpZ2h0OiAxLjA1LFxuICAgICAgICBmb250U2l6ZTogMTIsXG4gICAgICAgIGZvbnRXZWlnaHQ6IDYwMFxuICAgICAgfSksXG5cbiAgICAgIC8vIGF4ZXMgbGFiZWxzLCBpbml0aWFsc1xuICAgICAgUGxvdC50ZXh0KGxvbmdpdHVkZS5kb21haW4oKSwge1xuICAgICAgICBmeDogMCwgZnk6IDAsIGZhY2V0OiBcImV4Y2x1ZGVcIixcbiAgICAgICAgeDogbG9uZ2l0dWRlLFxuICAgICAgICB5OiA5MCAtIDEuMDksXG4gICAgICAgIHRleHQ6IGQgPT4gZC5zbGljZSgwLDIpLFxuICAgICAgICBsaW5lV2lkdGg6IDUsXG4gICAgICAgIGxpbmVIZWlnaHQ6IDEuMDUsXG4gICAgICAgIGZvbnRTaXplOiAxNCxcbiAgICAgICAgZm9udFdlaWdodDogNjAwXG4gICAgICB9KSxcblxuICAgICAgLy8gYXJlYXNcbiAgICAgIFBsb3QuYXJlYShmYXN0ZGF0YSwge1xuICAgICAgICB4MTogKHsgZGF0YXNldCB9KSA9PiBsb25naXR1ZGUoZGF0YXNldCksXG4gICAgICAgIHkxOiAoeyBzY2FsZWRfcXBzIH0pID0+IDkwIC0gc2NhbGVkX3FwcyxcbiAgICAgICAgeDI6IDAsXG4gICAgICAgIHkyOiA5MCxcbiAgICAgICAgZmlsbDogXCJncmF5XCIsXG4gICAgICAgIGZpbGxPcGFjaXR5OiAwLjI1LFxuICAgICAgICBzdHJva2U6IFwiZ3JheVwiLFxuICAgICAgICBjdXJ2ZTogXCJjYXJkaW5hbC1jbG9zZWRcIlxuICAgICAgfSksXG5cbiAgICAgIC8vIGRhdGEgdmFsdWVzXG4gICAgICBQbG90LmRvdChmYXN0ZGF0YSwge1xuICAgICAgICB4OiAoZCkgPT4gbG9uZ2l0dWRlKGQuZGF0YXNldCksXG4gICAgICAgIHk6IChkKSA9PiA5MCAtIGQuc2NhbGVkX3FwcyxcbiAgICAgICAgZmlsbDogKGQpID0+IHR5cGVfY29sb3IoZC5kYXRhc2V0X3R5cGUpLFxuICAgICAgICBzdHJva2U6IFwid2hpdGVcIlxuICAgICAgfSksXG5cbiAgICAgIC8vIGludGVyYWN0aXZlIGxhYmVsc1xuICAgICAgUGxvdC50ZXh0KFxuICAgICAgICBmYXN0ZGF0YSxcbiAgICAgICAgUGxvdC5wb2ludGVyKHtcbiAgICAgICAgICB4OiAoeyBkYXRhc2V0IH0pID0+IGxvbmdpdHVkZShkYXRhc2V0KSxcbiAgICAgICAgICB5OiAoeyBzY2FsZWRfcXBzIH0pID0+IDkwIC0gc2NhbGVkX3FwcyxcbiAgICAgICAgICB0ZXh0OiAoZCkgPT4gYCR7Zm10X3FwcyhkLnFwcyl9IHFwc1xcbigke01hdGgucm91bmQoMTAwICogZC5zY2FsZWRfcXBzKX0lKVxcbiR7ZC5wYXJhbXN9YCxcbiAgICAgICAgICB0ZXh0QW5jaG9yOiBcInN0YXJ0XCIsXG4gICAgICAgICAgZHg6IDQsXG4gICAgICAgICAgZmlsbDogXCJjdXJyZW50Q29sb3JcIixcbiAgICAgICAgICBzdHJva2U6IFwid2hpdGVcIixcbiAgICAgICAgICBtYXhSYWRpdXM6IDEwLFxuICAgICAgICAgIGZvbnRTaXplOiAxOFxuICAgICAgICB9KVxuICAgICAgKVxuICAgICAgXG4gICAgXVxuICB9KTtcbiAgc2V0X3JhZGFyX2J1c3koZmFsc2UpO1xuICByZXR1cm4gcGxvdDtcbn1cbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncmVjYWxsX3RocmVzaG9sZCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdrX3ZhbHVlJykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3NlbGVjdGVkX2RhdGFzZXRzJykifV19
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }

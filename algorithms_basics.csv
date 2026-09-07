@@ -20,7 +20,6 @@ mrpt,false
 ngt-onng,false
 ngt-qg,false
 nsg(faiss),false
-pag,false
 puffinn,false
 pynndescent,false
 rabitq-hnsw,false

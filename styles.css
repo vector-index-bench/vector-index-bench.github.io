@@ -94,7 +94,79 @@ main#quarto-document-content:has(> .overview-layout) > #title-block-header {
 }
 
 .overview-radars {
+  position: relative;
   min-width: 0;
+}
+
+/* Dimming veil + badge shown while the radar data is being recomputed. Both
+   fade in with a short delay, so that quick updates do not flash. */
+.overview-radars::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.overview-radars.is-computing::after {
+  opacity: 1;
+  transition-delay: 0.25s;
+}
+
+.radar-busy {
+  position: sticky;
+  z-index: 5;
+  top: 5.5rem;
+  display: flex;
+  height: 0;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.overview-radars.is-computing .radar-busy {
+  opacity: 1;
+  transition-delay: 0.25s;
+}
+
+.radar-busy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--vibe-border);
+  border-radius: 999px;
+  background: var(--vibe-surface);
+  box-shadow: 0 4px 14px rgba(27, 51, 70, 0.14);
+  color: var(--vibe-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.radar-spinner {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex: none;
+  border: 2px solid rgba(21, 122, 138, 0.25);
+  border-radius: 50%;
+  border-top-color: var(--vibe-accent);
+  animation: radar-spin 0.7s linear infinite;
+}
+
+@keyframes radar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-spinner {
+    animation-duration: 2.5s;
+  }
 }
 
 .navbar {
