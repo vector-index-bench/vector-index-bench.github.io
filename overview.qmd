@@ -190,7 +190,7 @@ radar_width = Math.min(width, document.querySelector(".overview-radars").clientW
 // per row as possible while keeping each cell wide enough to stay readable.
 // Cell 0 is the legend (the empty facet carrying the full axis labels), so the
 // grid has to hold one cell more than there are algorithms.
-radar_cell_min_width = 190;
+radar_cell_min_width = 200;
 radar_cell_aspect = 1.1;
 radar_cells = facet_keys.length + 1;
 radar_cols = Math.max(2, Math.min(radar_cells - 1, Math.round(radar_width / radar_cell_min_width)));
@@ -237,16 +237,17 @@ radar_busy = {
       x: (d) => d.algorithm_rank % radar_cols,
       axis: null
     },
-    fx: {padding: .1},
-    fy: {padding: .1},
+    fx: {padding: .15},
+    fy: {padding: .15},
     marks: [
       // Facet name
       Plot.text(fastdata,
         Plot.selectFirst({
             text: "algorithm",
-            frameAnchor: "top-left",
+            frameAnchor: "top",
             fontWeight: "700",
-            fontSize: 18
+            fontSize: 18,
+            dy: -15
         })
       ),
 
@@ -300,7 +301,7 @@ radar_busy = {
       Plot.text(longitude.domain(), {
         fx: 0, fy: 0, facet: "exclude",
         x: longitude,
-        y: 90 - 1.09,
+        y: 90 - 1.15,
         text: d => d.slice(0,2),
         lineWidth: 5,
         lineHeight: 1.05,
