@@ -92,7 +92,7 @@ SELECT * FROM non_dominated;
 `
 
 other_configurations = db.sql`
-	SELECT algorithm, dataset, params, qps, recall
+	SELECT algorithm, dataset, params, qps, recall, build_time
 	FROM summary
 	WHERE dataset = ${selected_dataset} and k = ${k_value} and algorithm = ${selected_algorithm};
 `
@@ -126,7 +126,7 @@ viewof paretoplot = Plot.plot({
 		Plot.tip(other_configurations, Plot.pointer({
 			  x: "recall",
 			  y: "qps",
-			  title: (d) => `${d.algorithm}\n${d.params}\nrecall: ${d.recall}\nqps:${d.qps}}`
+			  title: (d) => `${d.algorithm}\n${d.params}\n\nrecall: ${d.recall.toFixed(4)}\nqps: ${d.qps.toFixed(2)}\nbuild time (s): ${d.build_time.toFixed(2)}`
 	    })),
   ]
 })
