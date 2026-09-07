@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://vector-index-bench.github.io/datasets.html</loc>
-    <lastmod>2026-09-07T14:19:47.393Z</lastmod>
-  </url>
-  <url>
-    <loc>https://vector-index-bench.github.io/overview.html</loc>
-    <lastmod>2026-09-07T14:37:15.572Z</lastmod>
-  </url>
-  <url>
     <loc>https://vector-index-bench.github.io/algorithm_focus.html</loc>
-    <lastmod>2026-09-07T14:19:47.393Z</lastmod>
+    <lastmod>2026-09-07T17:24:13.997Z</lastmod>
   </url>
   <url>
-    <loc>https://vector-index-bench.github.io/robustness.html</loc>
-    <lastmod>2026-09-07T14:19:47.395Z</lastmod>
-  </url>
-  <url>
-    <loc>https://vector-index-bench.github.io/index.html</loc>
-    <lastmod>2026-09-07T14:19:47.395Z</lastmod>
+    <loc>https://vector-index-bench.github.io/datasets.html</loc>
+    <lastmod>2026-09-07T17:23:52.134Z</lastmod>
   </url>
   <url>
     <loc>https://vector-index-bench.github.io/tradeoff.html</loc>
-    <lastmod>2026-09-07T14:19:47.396Z</lastmod>
+    <lastmod>2026-09-07T17:23:53.873Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vector-index-bench.github.io/overview.html</loc>
+    <lastmod>2026-09-07T17:23:52.136Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vector-index-bench.github.io/index.html</loc>
+    <lastmod>2026-09-07T17:23:52.135Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vector-index-bench.github.io/robustness.html</loc>
+    <lastmod>2026-09-07T17:23:53.873Z</lastmod>
   </url>
 </urlset>
