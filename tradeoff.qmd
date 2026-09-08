@@ -22,8 +22,8 @@ db = DuckDBClient.of({
 alldata = db.sql`select * from summary;`
 algorithms = db.sql`
 	select distinct algorithm
-	from summary natural join algorithm_basics
-	where is_gpu = ${gpu_algorithms}
+	from summary natural left join algorithm_basics
+	where coalesce(is_gpu, false) = ${gpu_algorithms}
 	order by all;
 `
 datasets = db.sql`
@@ -147,11 +147,11 @@ pareto = db.sql`WITH
 filtered_summary AS (
 	SELECT *
 	FROM summary natural left join algorithm_basics
-	WHERE is_gpu = ${gpu_algorithms}
+	WHERE coalesce(is_gpu, false) = ${gpu_algorithms}
 ),
 ranked_points AS (
 	SELECT
-		algorithm, dataset, params, qps, recall,
+		algorithm, dataset, params, qps, recall, build_time, index_size,
 		ROW_NUMBER() OVER (PARTITION BY algorithm, dataset ORDER BY qps) AS rank_qps,
 		ROW_NUMBER() OVER (PARTITION BY algorithm, dataset ORDER BY recall) AS rank_recall
 	FROM filtered_summary
@@ -159,7 +159,8 @@ ranked_points AS (
 ),
 non_dominated AS (
 	SELECT
-		r1.algorithm, r1.dataset, r1.params, r1.qps, r1.recall
+		r1.algorithm, r1.dataset, r1.params, r1.qps, r1.recall,
+		r1.build_time, r1.index_size
 	FROM ranked_points r1
 	LEFT JOIN ranked_points r2
 	ON r1.algorithm = r2.algorithm
@@ -200,6 +201,18 @@ viewof paretoplot = Plot.plot({
 			  marker: "circle-stroke",
 			  tip: false
 	    }),
+	  Plot.dot(highlighted, {
+			  x: "recall",
+			  y: "qps",
+			  r: 4,
+			  fill: (d) => color_map.get(d.algorithm),
+			  stroke: "white",
+			  strokeWidth: 0.5,
+			  title: (d) => `${d.algorithm}\nrecall ${d.recall.toFixed(4)}\n` +
+					`${d3.format(".3s")(d.qps)} qps\n` +
+					`build ${d3.format(".3s")(d.build_time)} s\n` +
+					`index ${d3.format(".3s")(d.index_size * 1024)}B`
+	    }),
 	  Plot.ruleX(background, Plot.pointerX({x: "recall", py: "qps", stroke: "red"}))
   ]
 })
@@ -209,11 +222,14 @@ viewof paretoplot = Plot.plot({
 //| output: false
 dynamic_recall_threshold = (paretoplot)? paretoplot.recall : null;
 rankdata = db.sql`
-	SELECT dataset, algorithm, k, max(qps) as qps
+	SELECT dataset, algorithm, k, max(qps) as qps,
+		arg_max(build_time, qps) as build_time,
+		arg_max(index_size, qps) as index_size,
+		min(build_time) as cheapest_build
 	FROM summary natural left join algorithm_basics
 	WHERE recall > ${dynamic_recall_threshold}
 	AND dataset = ${selected_dataset}
-	AND is_gpu = ${gpu_algorithms}
+	AND coalesce(is_gpu, false) = ${gpu_algorithms}
 	GROUP BY dataset, algorithm, k
 `
 half = d3.max(rankdata, d => d.qps) / 2
@@ -221,34 +237,79 @@ console.log(half)
 ```
 
 ```{ojs}
-//| title: Ranking of algorithms at recall higher than the selected threshold
-Plot.plot({
-	style: {fontSize: "12pt"},
-	marginLeft: 180,
-	marks: [
-		Plot.ruleY([0]),
-		Plot.barX(rankdata, {
-			y: "algorithm",
-			x: "qps",
-			fill: d => color_map.has(d.algorithm)? color_map.get(d.algorithm) : "gray",
-			sort: {y: "-x"}
-		}),
-		Plot.text(rankdata.filter(d => d.qps < half), {
-			y: "algorithm",
-			x: "qps",
-			text: d => d3.format(".0f")(d.qps) + " qps",
-			dx: 10,
-			textAnchor: "start",
-			fill: "black"
-		}),
-		Plot.text(rankdata.filter(d => d.qps >= half), {
-			y: "algorithm",
-			x: "qps",
-			text: d => d3.format(".0f")(d.qps) + " qps",
-			dx: -10,
-			textAnchor: "end",
-			fill: "white"
-		})
-	]
-})
+//| title: Ranking at the selected threshold, and what each configuration costs
+// Three aligned charts sharing one row order: throughput ranks the algorithms,
+// the other two say what that rank costs to build and to keep in memory. Separate
+// panels rather than one plot, because the three quantities have different units.
+{
+  const rows = Array.from(rankdata);
+  const order = rows.slice().sort((a, b) => b.qps - a.qps).map(d => d.algorithm);
+  const height = 24 * order.length + 52;
+  const fill = (d) => color_map.has(d.algorithm) ? color_map.get(d.algorithm) : "gray";
+  const f = d3.format(".3s");
+  const decade = (v) => Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-6 ? f(v) : "";
+  // seconds read badly in SI ("3.49ks"), so build times get human units
+  const secs = (s) => s < 90 ? (s < 10 ? s.toFixed(1) : d3.format(".3r")(s)) + " s"
+                    : s < 5400 ? (s / 60).toFixed(0) + " min"
+                    : (s / 3600).toFixed(1) + " h";
+
+  const throughput = Plot.plot({
+    style: {fontSize: "11pt"},
+    width: 430, height,
+    marginLeft: 175, marginRight: 66, marginTop: 26, marginBottom: 34,
+    x: {grid: true, label: "queries per second →"},
+    y: {domain: order, label: null},
+    marks: [
+      Plot.ruleX([0]),
+      Plot.barX(rows, {y: "algorithm", x: "qps", fill, inset: 1}),
+      Plot.text(rows, {y: "algorithm", x: "qps", text: d => f(d.qps), dx: 7, textAnchor: "start"})
+    ]
+  });
+
+  const minBuild = d3.min(rows, d => d.build_time);
+  const minSize = d3.min(rows, d => d.index_size);
+  const cells = rows.flatMap(d => [
+    {algorithm: d.algorithm, metric: "build time", ratio: d.build_time / minBuild,
+     label: secs(d.build_time),
+     tip: `${d.algorithm}\nbuild ${secs(d.build_time)} — ${(d.build_time / minBuild).toFixed(1)}× the cheapest here` +
+          `\ncheapest build clearing the threshold: ${secs(d.cheapest_build)}`},
+    {algorithm: d.algorithm, metric: "index size", ratio: d.index_size / minSize,
+     label: f(d.index_size * 1024) + "B",
+     tip: `${d.algorithm}\nindex ${f(d.index_size * 1024)}B — ${(d.index_size / minSize).toFixed(1)}× the smallest here`}
+  ]);
+  const maxRatio = d3.max(cells, d => d.ratio);
+
+  const resources = Plot.plot({
+    style: {fontSize: "11pt"},
+    width: 300, height,
+    marginLeft: 10, marginRight: 10, marginTop: 26, marginBottom: 34,
+    x: {domain: ["build time", "index size"], label: null, axis: "top"},
+    y: {domain: order, axis: null},
+    color: {type: "log", scheme: "blues", domain: [1, maxRatio]},
+    marks: [
+      Plot.cell(cells, {x: "metric", y: "algorithm", fill: "ratio", inset: 0.5, title: "tip"}),
+      Plot.text(cells, {x: "metric", y: "algorithm", text: "label", fontSize: 10,
+        fill: d => d.ratio > Math.sqrt(maxRatio) ? "white" : "black"})
+    ]
+  });
+
+  const scale = Plot.legend({
+    color: {type: "log", scheme: "blues", domain: [1, maxRatio],
+            label: "× the cheapest build / smallest index on this dataset"},
+    width: 300, style: {fontSize: "10pt"}
+  });
+
+  return html`<div>
+    <div style="display: flex; flex-wrap: wrap; gap: 2px; align-items: flex-start;">
+      ${throughput}${resources}
+    </div>
+    <div style="margin-top: 0.2rem;">${scale}</div>
+    <div style="font-size: 0.8rem; color: #5a6570; margin-top: 0.3rem;">
+      Throughput ranks the algorithms; the two cells say what that rank costs. Both are
+      shaded by how many times they exceed the cheapest build and the smallest index on
+      this dataset, so a dark row is expensive whichever way you read it. Hover a cell for
+      the ratio, and for the cheapest build that still clears the same recall threshold.
+    </div>
+  </div>`;
+}
 ```

@@ -102,7 +102,7 @@ fastdata = db.sql`
     ),
     filtered_summary as (
       select * from normalized_names natural join selected_datasets natural left join algorithm_basics
-      where not is_gpu 
+      where not coalesce(is_gpu, false) 
     ),
     all_datasets as ( select distinct dataset, type from filtered_summary ),
     all_algorithms as ( select distinct algorithm from filtered_summary ),

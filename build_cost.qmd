@@ -1,0 +1,609 @@
+---
+echo: false
+title: "Build cost"
+format:
+  dashboard:
+    orientation: columns
+    scrolling: true
+    css: styles.css
+---
+
+<!--
+Build cost page for the VIBE results website.
+
+Everything here is computed from columns export_results.py already writes:
+build_time, index_size, qps, recall — plus n from results/data-info.parquet.
+
+Grouping note: `params` is "<algorithm name>|<query parameters>", and for several
+algorithms the name itself contains query parameters (e.g. FaissIVFSQ(..., n_probe=1)),
+so it is not an index-configuration key. build_time is: every run that shares an
+index build shares its build_time. All queries below group by (algorithm, build_time),
+which recovers the true number of builds (hnswlib: 9 builds behind 144 param strings
+on landmark-nomic).
+-->
+
+## Column {width=20%}
+
+:::{.card .flow}
+Build time and query time are both wall-clock seconds on a single core, so they add
+up. Pick a dataset and the recall you need, then use the legend to highlight
+algorithms.
+:::
+
+```{ojs}
+//| output: false
+db = DuckDBClient.of({
+  summary: FileAttachment("results/summary.parquet"),
+  algorithm_basics: {file: FileAttachment("algorithms_basics.csv"), header: true},
+  data_info: FileAttachment("results/data-info.parquet")
+});
+
+datasets = db.sql`
+  select distinct dataset from summary
+  where dataset not like '%-id-%' order by dataset;
+`
+// LEFT JOIN + coalesce: five algorithms in the published results are missing from
+// algorithms_basics.csv (hnswq(faiss), nsgq(faiss), pag, pdx, symqg). A NATURAL JOIN
+// drops them silently; treating an unknown algorithm as CPU keeps them visible.
+algorithms = db.sql`
+  select distinct algorithm from summary natural left join algorithm_basics
+  where coalesce(is_gpu, false) = ${gpu_algorithms} order by all;
+`
+palette = Array.from(d3["schemeTableau10"]);
+ncolors = palette.length;
+```
+
+```{ojs}
+//| output: false
+mutable_non_gpu_color_map = new Mutable(new Map([
+  ["hnswlib", palette[0]],
+  ["ivf(faiss)", palette[1]],
+  ["glass", palette[2]],
+]));
+non_gpu_color_map = mutable_non_gpu_color_map.generator
+
+mutable_gpu_color_map = new Mutable(new Map([
+  ["cuvs-cagra", palette[0]],
+  ["faiss-gpu-ivf", palette[1]],
+  ["ggnn", palette[2]],
+]));
+gpu_color_map = mutable_gpu_color_map.generator
+
+color_map = gpu_algorithms ? gpu_color_map : non_gpu_color_map
+colorOf = (a) => color_map.has(a) ? color_map.get(a) : "#cccccc"
+```
+
+```{ojs}
+//| fill: false
+//| width: 20%
+viewof selected_dataset = Inputs.select(
+  datasets.map(d => d.dataset),
+  {value: "landmark-nomic-768-normalized", label: "select dataset"}
+);
+k_values = db.sql`select distinct k from summary;`
+viewof k_value = Inputs.select(k_values.map(d => d.k), {value: 100, label: "value of k"});
+viewof recall_target = Inputs.range([0.8, 1], {step: 0.01, value: 0.9, label: "recall target"});
+viewof ternary_pick = Inputs.select(
+  new Map([["fastest at the target", "qps"], ["cheapest to build", "build"],
+           ["smallest index", "size"]]),
+  {value: "qps", label: "triangle config"}
+);
+viewof ternary_scale = Inputs.select(
+  new Map([["doublings worse (log₂)", "log"], ["times worse", "ratio"]]),
+  {value: "log", label: "triangle scale"}
+);
+viewof overview_metric = Inputs.select(
+  new Map([["× the cheapest build there", "ratio"], ["absolute seconds", "abs"]]),
+  {value: "ratio", label: "overview cells"}
+);
+```
+
+```{ojs}
+//| title: Algorithm type
+//| fill: false
+viewof gpu_algorithms = {
+  const control = html`
+    <div class="form-check form-switch d-flex align-items-center gap-2">
+      <input class="form-check-input mt-0" type="checkbox" role="switch" id="gpu-toggle-build">
+      <label class="form-check-label" for="gpu-toggle-build">GPU algorithms</label>
+    </div>
+  `;
+  const toggle = control.querySelector("input");
+  Object.defineProperty(control, "value", {get: () => toggle.checked});
+  return control;
+}
+```
+
+```{ojs}
+//| output: false
+d3.select("#legend-build")
+  .selectAll("div")
+  .data(algorithms)
+  .join("div")
+  .style("border-bottom", d => `solid 6px ${(color_map.has(d.algorithm)) ? color_map.get(d.algorithm) : "lightgray"}`)
+  .style("border-top", "solid 1px lightgray")
+  .style("border-left", "solid 1px lightgray")
+  .style("border-right", "solid 1px lightgray")
+  .style("border-radius", "4px")
+  .style("padding-right", "5pt")
+  .style("padding-left", "5pt")
+  .on("click", (event, d) => {
+    const key = d.algorithm;
+    let cm = new Map(color_map);
+    if (cm.has(key)) {
+      cm.delete(key);
+    } else {
+      const usedColors = new Set(cm.values());
+      const color = palette.find(color => !usedColors.has(color));
+      if (color !== undefined) cm.set(key, color);
+    }
+    if (gpu_algorithms) mutable_gpu_color_map.value = cm;
+    else mutable_non_gpu_color_map.value = cm;
+  })
+  .text(d => d.algorithm);
+```
+
+```{ojs}
+//| title: Algorithms
+html`
+<div class="algorithm-list-content">
+  <p>Select up to ${ncolors} algorithms to highlight them in the plots.</p>
+  <div id="legend-build" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 4pt;">
+  </div>
+</div>
+`
+```
+
+```{ojs}
+//| output: false
+// ---------------------------------------------------------------- the data
+// One row per index build: what it cost, how large it is, and the best
+// throughput it can deliver at the selected recall (null if it never gets there).
+builds_arrow = db.sql`
+  SELECT algorithm,
+         build_time,
+         any_value(index_size) AS index_size,
+         max(recall) AS best_recall,
+         max(CASE WHEN recall >= ${recall_target} THEN qps END) AS qps_at_target,
+         -- arg_max ignores rows whose ordering value is NULL, so these describe the
+         -- fastest configuration of this build that actually reaches the target
+         arg_max(params, CASE WHEN recall >= ${recall_target} THEN qps END) AS best_params,
+         arg_max(recall, CASE WHEN recall >= ${recall_target} THEN qps END) AS recall_at_best
+  FROM summary NATURAL LEFT JOIN algorithm_basics
+  WHERE dataset = ${selected_dataset}
+    AND k = ${k_value}
+    AND coalesce(is_gpu, false) = ${gpu_algorithms}
+  GROUP BY algorithm, build_time
+  ORDER BY algorithm, build_time;
+`
+builds = Array.from(builds_arrow)          // Arrow tables are not plain arrays
+usable = builds.filter(d => d.qps_at_target !== null && d.qps_at_target > 0)
+
+dataset_size_arrow = db.sql`
+  SELECT n FROM data_info WHERE dataset = ${selected_dataset};
+`
+dataset_size = Array.from(dataset_size_arrow).map(d => Number(d.n))[0] ?? null
+
+// per algorithm: the sweep, and the single build a paper would report
+sweep = Array.from(d3.rollup(builds, v => ({
+    n_builds: v.length,
+    n_usable: v.filter(d => d.qps_at_target !== null).length,
+    sweep_seconds: d3.sum(v, d => d.build_time),
+    cheapest_usable: d3.min(v.filter(d => d.qps_at_target !== null), d => d.build_time),
+    reported: v.filter(d => d.qps_at_target !== null)
+                .reduce((m, d) => (m === null || d.qps_at_target > m.qps_at_target) ? d : m, null)
+  }), d => d.algorithm))
+  .map(([algorithm, o]) => ({algorithm, ...o}))
+  .filter(d => d.n_usable > 0)
+
+reported = sweep.map(d => ({algorithm: d.algorithm, ...d.reported,
+                            queries_equiv: d.reported.build_time * d.reported.qps_at_target}))
+alg_by_build = sweep.slice().sort((a, b) => a.cheapest_usable - b.cheapest_usable).map(d => d.algorithm)
+// the build the reader last clicked in the sweep panel
+mutable_selected_build = new Mutable(null)
+selected_build = mutable_selected_build.generator
+
+fmtN = d3.format(".3s")
+// SI on seconds reads badly ("3.49ks"), so durations get human units
+secs = (v) => v < 90 ? (v < 10 ? v.toFixed(1) : d3.format(".3r")(v)) + " s"
+            : v < 5400 ? (v / 60).toFixed(0) + " min"
+            : (v / 3600).toFixed(1) + " h"
+// label only decade ticks: a log axis with .3s on every minor tick is unreadable
+fmtDecade = (v) => Math.abs(Math.log10(v) - Math.round(Math.log10(v))) < 1e-6 ? fmtN(v) : ""
+```
+
+## Column
+
+### Row
+
+::: {.card title="Every build in the sweep, not just the one that gets reported" width=72%}
+```{ojs}
+// Clicking a dot reports the fastest configuration that build reaches at the
+// current recall target. Plot renders one <circle> per datum in data order, so the
+// circles inside each dot mark line up with the array that produced them.
+{
+  mutable_selected_build.value = null;   // a new dataset/recall invalidates the old pick
+
+  const missed = builds.filter(d => d.qps_at_target === null);
+  const reaches = builds.filter(d => d.qps_at_target !== null);
+
+  const chart = Plot.plot({
+    style: {fontSize: "10pt"},
+    marginLeft: 150,
+    marginRight: 20,
+    height: 26 * alg_by_build.length + 46,
+    x: {type: "log", grid: true, label: "build time (seconds) →", tickFormat: fmtDecade},
+    y: {domain: alg_by_build, label: null},
+    marks: [
+      Plot.ruleY(alg_by_build, {y: d => d, stroke: "#eee"}),
+      Plot.dot(missed, {
+        x: "build_time", y: "algorithm", r: 3.5, stroke: "lightgray", fill: "none",
+        title: d => `${d.algorithm}\n${secs(d.build_time)}\nnever reaches recall ` +
+                    `${recall_target} (best ${d.best_recall.toFixed(3)})`
+      }),
+      Plot.dot(reaches, {
+        x: "build_time", y: "algorithm", r: 3.5, fill: d => colorOf(d.algorithm), fillOpacity: 0.75,
+        title: d => `${d.algorithm}\n${secs(d.build_time)}\n${fmtN(d.qps_at_target)} qps — click for details`
+      }),
+      Plot.tickX(reported, {
+        x: "build_time", y: "algorithm", stroke: "black", strokeWidth: 2, strokeOpacity: 0.75
+      })
+    ]
+  });
+
+  const markData = [missed, reaches];
+  chart.querySelectorAll("g[aria-label='dot']").forEach((g, gi) => {
+    const rows = markData[gi];
+    if (!rows) return;
+    Array.from(g.querySelectorAll("circle")).forEach((circle, i) => {
+      const d = rows[i];
+      if (!d) return;
+      circle.style.cursor = "pointer";
+      circle.addEventListener("click", () => {
+        chart.querySelectorAll("circle").forEach(c => {
+          c.removeAttribute("stroke-width");
+          if (c.getAttribute("stroke") === "black") c.setAttribute("stroke", "none");
+        });
+        circle.setAttribute("stroke", "black");
+        circle.setAttribute("stroke-width", 2);
+        mutable_selected_build.value = d;
+      });
+    });
+  });
+  return chart;
+}
+```
+Each dot is one index build; **click one** to inspect it. Hollow dots never reach the
+recall target with any search parameters. The black tick marks the build a paper would
+quote — the one whose configuration gives the highest throughput at this recall.
+:::
+
+```{ojs}
+//| title: Selected build
+//| width: 28%
+{
+  const muted = "color: #5a6570;";
+  if (!selected_build) {
+    return html`<div style="${muted} font-size: 0.9rem;">
+      Click a dot in the sweep to see what that build costs and which configuration
+      gets the most out of it at the current recall target.</div>`;
+  }
+  const d = selected_build;
+  const row = (k, v) => html`<div style="display: flex; justify-content: space-between; gap: 1rem;">
+      <span style="${muted}">${k}</span><span style="font-weight: 500; text-align: right;">${v}</span>
+    </div>`;
+  const params = (d.best_params ?? "").split("|");
+
+  if (d.qps_at_target === null) {
+    return html`<div style="display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem;">
+      <div style="font-size: 1.1rem; font-weight: 600;">${d.algorithm}</div>
+      ${row("build time", secs(d.build_time))}
+      ${row("index size", `${fmtN(d.index_size * 1024)}B`)}
+      ${row("best recall reached", d.best_recall.toFixed(4))}
+      <div style="${muted} margin-top: 0.3rem;">
+        No search parameters take this build to recall ${recall_target}.</div>
+    </div>`;
+  }
+  return html`<div style="display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem;">
+    <div style="font-size: 1.1rem; font-weight: 600;">${d.algorithm}</div>
+    ${row("build time", secs(d.build_time))}
+    ${row("index size", `${fmtN(d.index_size * 1024)}B`)}
+    ${row("fastest at the target", `${fmtN(d.qps_at_target)} qps`)}
+    ${row("recall there", d.recall_at_best.toFixed(4))}
+    ${row("best recall this build reaches", d.best_recall.toFixed(4))}
+    <div style="${muted} margin-top: 0.4rem;">index</div>
+    <div style="font-family: var(--bs-font-monospace, monospace); font-size: 0.75rem; overflow-wrap: anywhere;">${params[0]}</div>
+    <div style="${muted}">query</div>
+    <div style="font-family: var(--bs-font-monospace, monospace); font-size: 0.75rem; overflow-wrap: anywhere;">${params[1] ?? "—"}</div>
+  </div>`;
+}
+```
+
+### Row
+
+```{ojs}
+//| title: "Build cost in queries you could have answered instead"
+Plot.plot({
+  style: {fontSize: "10pt"},
+  marginLeft: 150,
+  marginRight: 70,
+  height: 22 * reported.length + 46,
+  x: {type: "log", grid: true, label: "build cost in query-equivalents →", tickFormat: fmtDecade},
+  y: {domain: reported.slice().sort((a, b) => a.queries_equiv - b.queries_equiv).map(d => d.algorithm), label: null},
+  marks: [
+    dataset_size ? Plot.ruleX([dataset_size], {stroke: "gray", strokeDasharray: "3 3"}) : null,
+    Plot.ruleY(reported, {
+      y: "algorithm", x1: d => d3.min(reported, x => x.queries_equiv) / 2, x2: "queries_equiv",
+      stroke: d => colorOf(d.algorithm), strokeWidth: 5, strokeOpacity: 0.6
+    }),
+    Plot.dot(reported, {x: "queries_equiv", y: "algorithm", r: 3.5, fill: d => colorOf(d.algorithm)}),
+    Plot.text(reported, {
+      x: "queries_equiv", y: "algorithm", text: d => fmtN(d.queries_equiv),
+      textAnchor: "start", dx: 8, fill: "currentColor", fontSize: 10
+    }),
+    Plot.tip(reported, Plot.pointer({
+      x: "queries_equiv", y: "algorithm",
+      title: d => `${d.algorithm}\nbuild ${secs(d.build_time)} × ${fmtN(d.qps_at_target)} qps\n` +
+                  `= ${fmtN(d.queries_equiv)} queries' worth of work`
+    }))
+  ].filter(d => d)
+})
+```
+
+::: {.card title="Why query-equivalents"}
+Build time in seconds is only meaningful on the machine that produced it. Multiplying
+it by the throughput that same machine achieves — `build_time × QPS` — cancels the
+machine speed to first order and states the build cost in the only currency the index
+earns back: queries answered. The dashed line is one pass over the dataset.
+A build costing far more query-equivalents than the dataset has points is one that
+only a long-lived, heavily queried index repays. A true hardware-independent measure
+would count distance computations during construction, which VIBE does not record
+today; this is the closest thing available from stored results.
+:::
+
+### Row
+
+```{ojs}
+//| output: false
+// ------------------------------------------------- the ternary design space
+// RUM (Athanassoulis et al., EDBT 2016) places access methods in a read/update/
+// memory triangle by argument. The ANN analogue — query speed / build cost /
+// memory — can be placed by measurement instead: for each algorithm take the
+// build that gives the best throughput at the recall target, express each of its
+// three costs as excess over the best value any algorithm achieves here, and use
+// the three excesses as barycentric coordinates. An algorithm that is best on an
+// axis has zero excess there and lands on the opposite edge; position says where
+// an algorithm's disadvantage sits, marker size says how much of it there is.
+// which of an algorithm's builds represents it in the triangle. The default —
+// its fastest at the recall target — is the configuration every other panel
+// reports, and it systematically minimises the query excess, so the other two
+// options are offered: they move the whole picture, which is the point.
+ternary_base = Array.from(d3.group(usable, d => d.algorithm), ([algorithm, v]) => ({
+  algorithm,
+  ...(ternary_pick === "qps" ? v.reduce((m, d) => d.qps_at_target > m.qps_at_target ? d : m)
+    : ternary_pick === "build" ? v.reduce((m, d) => d.build_time < m.build_time ? d : m)
+    : v.reduce((m, d) => d.index_size < m.index_size ? d : m))
+}))
+
+best_qps = d3.max(ternary_base, d => d.qps_at_target)
+best_build = d3.min(ternary_base, d => d.build_time)
+best_size = d3.min(ternary_base, d => d.index_size)
+
+ROOT3_2 = Math.sqrt(3) / 2
+
+// "log": how many doublings worse than the best on that axis — treats the three
+// axes symmetrically, so the one with the widest spread does not own the geometry.
+// "ratio": how many times worse, which is easier to read but lets the widest axis
+// dominate.
+excess = ternary_scale === "log" ? (x) => Math.log2(x) : (x) => x - 1
+
+ternary = ternary_base.map(d => {
+  const e_query = excess(best_qps / d.qps_at_target);   // slower than the fastest
+  const e_build = excess(d.build_time / best_build);    // more expensive to build
+  const e_mem = excess(d.index_size / best_size);       // larger than the smallest
+  const total = e_query + e_build + e_mem;
+  const s = total > 0 ? [e_query / total, e_build / total, e_mem / total] : [1/3, 1/3, 1/3];
+  return {
+    ...d, e_query, e_build, e_mem, total,
+    s_query: s[0], s_build: s[1], s_mem: s[2],
+    x: 0.5 * s[0] + s[2],
+    y: ROOT3_2 * s[0]
+  };
+})
+
+// triangle outline and the 25 / 50 / 75 % grid inside it
+corners = [{x: 0.5, y: ROOT3_2}, {x: 0, y: 0}, {x: 1, y: 0}, {x: 0.5, y: ROOT3_2}]
+ternary_grid = [0.25, 0.5, 0.75].flatMap(v => [
+  // constant query share
+  {x1: 0.5 * v, y1: ROOT3_2 * v, x2: 0.5 * v + (1 - v), y2: ROOT3_2 * v},
+  // constant build share
+  {x1: 1 - v, y1: 0, x2: 0.5 * (1 - v), y2: ROOT3_2 * (1 - v)},
+  // constant memory share
+  {x1: v, y1: 0, x2: v + 0.5 * (1 - v), y2: ROOT3_2 * (1 - v)}
+])
+// textAnchor and dy are constants in Plot, not channels, so each corner label is
+// its own mark
+corner_query = [{x: 0.5, y: ROOT3_2, t: "slower to query"}]
+corner_build = [{x: 0, y: 0, t: "expensive to build"}]
+corner_mem = [{x: 1, y: 0, t: "large index"}]
+// 22 points crowd the bottom edge, so label only what the reader chose plus the
+// single most balanced index; everything else is in the tooltip
+best_overall = ternary.reduce((m, d) => d.total < m.total ? d : m)
+ternary_labelled = ternary.filter(d => color_map.has(d.algorithm) || d === best_overall)
+```
+
+```{ojs}
+//| title: "Where each algorithm's disadvantage sits"
+Plot.plot({
+  style: {fontSize: "10pt"},
+  aspectRatio: 1,
+  marginTop: 30,
+  marginBottom: 34,
+  marginLeft: 30,
+  marginRight: 30,
+  x: {axis: null, domain: [-0.04, 1.04]},
+  y: {axis: null, domain: [-0.03, ROOT3_2 + 0.03]},
+  r: {type: "sqrt", range: [3, 16]},
+  marks: [
+    Plot.link(ternary_grid, {x1: "x1", y1: "y1", x2: "x2", y2: "y2", stroke: "#e8e8e8"}),
+    Plot.line(corners, {x: "x", y: "y", stroke: "#999"}),
+    Plot.text(corner_query, {x: "x", y: "y", text: "t", textAnchor: "middle", dy: -14, fill: "currentColor"}),
+    Plot.text(corner_build, {x: "x", y: "y", text: "t", textAnchor: "start", dy: 18, fill: "currentColor"}),
+    Plot.text(corner_mem, {x: "x", y: "y", text: "t", textAnchor: "end", dy: 18, fill: "currentColor"}),
+    Plot.dot(ternary, {
+      x: "x", y: "y", r: "total",
+      fill: d => colorOf(d.algorithm),
+      fillOpacity: d => color_map.has(d.algorithm) ? 0.85 : 0.5,
+      stroke: "white", strokeWidth: 0.75,
+      title: d => `${d.algorithm}\n` +
+        `${fmtN(d.qps_at_target)} qps — ${(best_qps / d.qps_at_target).toFixed(1)}× off the fastest\n` +
+        `${secs(d.build_time)} build — ${(d.build_time / best_build).toFixed(1)}× the cheapest\n` +
+        `${fmtN(d.index_size * 1024)}B index — ${(d.index_size / best_size).toFixed(1)}× the smallest\n` +
+        `share: query ${(100 * d.s_query).toFixed(0)}% · build ${(100 * d.s_build).toFixed(0)}%` +
+        ` · memory ${(100 * d.s_mem).toFixed(0)}%`
+    }),
+    Plot.text(ternary_labelled, {
+      x: "x", y: "y", text: "algorithm", dy: -12, fontSize: 9, fill: "currentColor"
+    })
+  ]
+})
+```
+
+::: {.card title="Reading the triangle"}
+Each algorithm is placed by its **excess over the best value on this dataset**: how far
+it is from the fastest index in throughput, from the cheapest in build time, and from the
+smallest in index size. Those three excesses, normalized to sum to one, are the
+coordinates. The scale control decides how "far" is counted — *doublings worse*, which
+weighs the three axes symmetrically, or *times worse*, which is easier to read but lets
+whichever axis happens to have the widest spread pull every point toward its corner.
+
+An algorithm that is best on one axis has no excess there and lands on the **opposite
+edge** — `lorann` on the build corner's far edge because it holds the smallest index,
+`rabitq-ivf` on the edge away from build because nothing builds faster. **Position is
+balance, marker size is magnitude**: a small dot near a corner is a good index with one
+mild weakness; a large dot in the same place is a bad trade. The top half of the triangle
+stays empty on most datasets, and that is itself a result — at a fixed recall the spread
+in throughput is far narrower than the spread in what the indexes cost to build and to
+store.
+
+Each algorithm is represented by one of its builds, and which one matters: the default —
+its fastest configuration at the recall target — is the one every other panel reports,
+and it is also the one that minimises the algorithm's distance from the query corner.
+Switching the config control to *cheapest to build* or *smallest index* re-places every
+point, and the movement is the trade being made.
+
+The reference values are set by whichever algorithm is best on each axis, so a single
+unusually small or fast index moves everyone else's coordinates — that is a property of
+normalizing to the best, and the same caveat applies to the relative build-time column in
+the VIBE paper. Raw values are in the tooltip.
+:::
+
+### Row
+
+```{ojs}
+//| output: false
+// ------------------------------------------- build cost and size across datasets
+// Ignores the dataset selector on purpose: these are the overviews.
+overview_arrow = db.sql`
+  SELECT dataset, algorithm,
+         min(build_time) AS cheapest_build,
+         min(index_size) AS smallest_index
+  FROM summary NATURAL LEFT JOIN algorithm_basics
+  WHERE k = ${k_value}
+    AND recall >= ${recall_target}
+    AND coalesce(is_gpu, false) = ${gpu_algorithms}
+    AND dataset NOT LIKE '%-id-%'
+  GROUP BY dataset, algorithm;
+`
+sizes_arrow = db.sql`SELECT dataset, n FROM data_info;`
+dataset_n = new Map(Array.from(sizes_arrow).map(d => [d.dataset, Number(d.n)]))
+
+overview_rows = Array.from(overview_arrow)
+overview_datasets = Array.from(new Set(overview_rows.map(d => d.dataset)))
+  .sort((a, b) => (dataset_n.get(a) ?? 0) - (dataset_n.get(b) ?? 0))
+shortDataset = (d) => d.replace(/-\d+-/, "-")
+
+// One matrix builder, used for both resources: cell value is the best this
+// algorithm can do on that axis while still clearing the recall target, and the
+// ratio is to whichever algorithm does best on that dataset.
+overviewFor = (metric) => {
+  const value = (d) => metric === "build" ? d.cheapest_build : d.smallest_index * 1024;
+  const floor = d3.rollup(overview_rows, v => d3.min(v, value), d => d.dataset);
+  const cells = overview_rows.map(d => ({...d, v: value(d), ratio: value(d) / floor.get(d.dataset)}));
+  const algorithms = Array.from(d3.rollup(cells, v => d3.median(v, d => d.ratio), d => d.algorithm))
+    .sort((a, b) => a[1] - b[1]).map(d => d[0]);
+  // midpoint of the (log) colour ramp, for deciding label contrast
+  const mid = overview_metric === "ratio"
+    ? Math.sqrt(d3.max(cells, d => d.ratio))
+    : Math.sqrt(d3.min(cells, d => d.v) * d3.max(cells, d => d.v));
+  return {cells, algorithms, mid};
+}
+
+overviewPlot = (metric) => {
+  const {cells, algorithms, mid} = overviewFor(metric);
+  if (cells.length === 0) {
+    return html`<div style="color: #5a6570;">Nothing reaches recall ${recall_target} on any dataset.</div>`;
+  }
+  const label = (d) => metric === "build" ? secs(d.v) : fmtN(d.v) + "B";
+  return Plot.plot({
+    style: {fontSize: "9pt"},
+    width: Math.max(780, 34 * overview_datasets.length + 170),
+    marginLeft: 150,
+    marginBottom: 190,
+    marginTop: 8,
+    height: 21 * algorithms.length + 200,
+    x: {domain: overview_datasets, tickRotate: -45, label: null, tickFormat: shortDataset},
+    y: {domain: algorithms, label: null},
+    color: {
+      type: "log",
+      scheme: metric === "build" ? "blues" : "purples",
+      label: overview_metric === "ratio"
+        ? (metric === "build" ? "build time ÷ cheapest build there" : "index size ÷ smallest index there")
+        : (metric === "build" ? "build time (seconds)" : "index size (bytes)")
+    },
+    marks: [
+      Plot.cell(
+        d3.cross(overview_datasets, algorithms).map(([dataset, algorithm]) => ({dataset, algorithm})),
+        {x: "dataset", y: "algorithm", fill: "#f2f2f2", inset: 0.5}
+      ),
+      Plot.cell(cells, {x: "dataset", y: "algorithm", inset: 0.5,
+        fill: d => overview_metric === "ratio" ? d.ratio : d.v}),
+      Plot.text(cells, {
+        x: "dataset", y: "algorithm", fontSize: 8,
+        text: d => overview_metric === "ratio"
+          ? (d.ratio < 10 ? d.ratio.toFixed(1) : d3.format(".0f")(d.ratio))
+          : label(d),
+        fill: d => (overview_metric === "ratio" ? d.ratio : d.v) > mid ? "white" : "black",
+        title: d => `${d.algorithm}\n${shortDataset(d.dataset)}\n` +
+          (metric === "build"
+            ? `cheapest build reaching recall ${recall_target}: ${secs(d.v)}`
+            : `smallest index reaching recall ${recall_target}: ${fmtN(d.v)}B`) +
+          `\n${d.ratio.toFixed(1)}× the best on this dataset`
+      })
+    ]
+  });
+}
+```
+
+::: {.card title="Across datasets: the cheapest build that reaches this recall"}
+```{ojs}
+overviewPlot("build")
+```
+Rows are ordered by median relative cost, columns by dataset size, so a row that darkens
+to the right scales worse than its neighbours. A grey cell means that algorithm never
+reaches recall ${recall_target} on that dataset with any configuration. Drag the recall
+slider to watch cells drop out.
+:::
+
+### Row
+
+::: {.card title="Across datasets: the smallest index that reaches this recall"}
+```{ojs}
+overviewPlot("size")
+```
+The same matrix for memory: the smallest index each algorithm can get away with while
+still clearing the recall target, against the smallest any algorithm manages on that
+dataset. Rows are ordered independently of the build-time matrix — an algorithm can be
+cheap on one axis and expensive on the other, and the two orderings differing is the
+finding.
+:::

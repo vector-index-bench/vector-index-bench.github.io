@@ -23,7 +23,7 @@ alldata = db.sql`select * from summary;`
 algorithms = db.sql`
 	select distinct summary.algorithm
 	from summary
-	inner join algorithm_basics using (algorithm)
+	left join algorithm_basics using (algorithm)
 	order by summary.algorithm;
 `
 datasets = db.sql`
