@@ -502,10 +502,12 @@ the VIBE paper. Raw values are in the tooltip.
 
 ```{ojs}
 //| output: false
-// ------------------------------------------------ build cost across all datasets
-// Ignores the dataset selector on purpose: this is the overview.
+// ------------------------------------------- build cost and size across datasets
+// Ignores the dataset selector on purpose: these are the overviews.
 overview_arrow = db.sql`
-  SELECT dataset, algorithm, min(build_time) AS cheapest_build
+  SELECT dataset, algorithm,
+         min(build_time) AS cheapest_build,
+         min(index_size) AS smallest_index
   FROM summary NATURAL LEFT JOIN algorithm_basics
   WHERE k = ${k_value}
     AND recall >= ${recall_target}
@@ -517,59 +519,75 @@ sizes_arrow = db.sql`SELECT dataset, n FROM data_info;`
 dataset_n = new Map(Array.from(sizes_arrow).map(d => [d.dataset, Number(d.n)]))
 
 overview_rows = Array.from(overview_arrow)
-overview_floor = d3.rollup(overview_rows, v => d3.min(v, d => d.cheapest_build), d => d.dataset)
-overview_cells = overview_rows.map(d => ({
-  ...d,
-  ratio: d.cheapest_build / overview_floor.get(d.dataset)
-}))
 overview_datasets = Array.from(new Set(overview_rows.map(d => d.dataset)))
   .sort((a, b) => (dataset_n.get(a) ?? 0) - (dataset_n.get(b) ?? 0))
-overview_algorithms = Array.from(
-    d3.rollup(overview_cells, v => d3.median(v, d => d.ratio), d => d.algorithm))
-  .sort((a, b) => a[1] - b[1]).map(d => d[0])
 shortDataset = (d) => d.replace(/-\d+-/, "-")
+
+// One matrix builder, used for both resources: cell value is the best this
+// algorithm can do on that axis while still clearing the recall target, and the
+// ratio is to whichever algorithm does best on that dataset.
+overviewFor = (metric) => {
+  const value = (d) => metric === "build" ? d.cheapest_build : d.smallest_index * 1024;
+  const floor = d3.rollup(overview_rows, v => d3.min(v, value), d => d.dataset);
+  const cells = overview_rows.map(d => ({...d, v: value(d), ratio: value(d) / floor.get(d.dataset)}));
+  const algorithms = Array.from(d3.rollup(cells, v => d3.median(v, d => d.ratio), d => d.algorithm))
+    .sort((a, b) => a[1] - b[1]).map(d => d[0]);
+  // midpoint of the (log) colour ramp, for deciding label contrast
+  const mid = overview_metric === "ratio"
+    ? Math.sqrt(d3.max(cells, d => d.ratio))
+    : Math.sqrt(d3.min(cells, d => d.v) * d3.max(cells, d => d.v));
+  return {cells, algorithms, mid};
+}
+
+overviewPlot = (metric) => {
+  const {cells, algorithms, mid} = overviewFor(metric);
+  if (cells.length === 0) {
+    return html`<div style="color: #5a6570;">Nothing reaches recall ${recall_target} on any dataset.</div>`;
+  }
+  const label = (d) => metric === "build" ? secs(d.v) : fmtN(d.v) + "B";
+  return Plot.plot({
+    style: {fontSize: "9pt"},
+    width: Math.max(780, 34 * overview_datasets.length + 170),
+    marginLeft: 150,
+    marginBottom: 190,
+    marginTop: 8,
+    height: 21 * algorithms.length + 200,
+    x: {domain: overview_datasets, tickRotate: -45, label: null, tickFormat: shortDataset},
+    y: {domain: algorithms, label: null},
+    color: {
+      type: "log",
+      scheme: metric === "build" ? "blues" : "purples",
+      label: overview_metric === "ratio"
+        ? (metric === "build" ? "build time ÷ cheapest build there" : "index size ÷ smallest index there")
+        : (metric === "build" ? "build time (seconds)" : "index size (bytes)")
+    },
+    marks: [
+      Plot.cell(
+        d3.cross(overview_datasets, algorithms).map(([dataset, algorithm]) => ({dataset, algorithm})),
+        {x: "dataset", y: "algorithm", fill: "#f2f2f2", inset: 0.5}
+      ),
+      Plot.cell(cells, {x: "dataset", y: "algorithm", inset: 0.5,
+        fill: d => overview_metric === "ratio" ? d.ratio : d.v}),
+      Plot.text(cells, {
+        x: "dataset", y: "algorithm", fontSize: 8,
+        text: d => overview_metric === "ratio"
+          ? (d.ratio < 10 ? d.ratio.toFixed(1) : d3.format(".0f")(d.ratio))
+          : label(d),
+        fill: d => (overview_metric === "ratio" ? d.ratio : d.v) > mid ? "white" : "black",
+        title: d => `${d.algorithm}\n${shortDataset(d.dataset)}\n` +
+          (metric === "build"
+            ? `cheapest build reaching recall ${recall_target}: ${secs(d.v)}`
+            : `smallest index reaching recall ${recall_target}: ${fmtN(d.v)}B`) +
+          `\n${d.ratio.toFixed(1)}× the best on this dataset`
+      })
+    ]
+  });
+}
 ```
 
 ::: {.card title="Across datasets: the cheapest build that reaches this recall"}
 ```{ojs}
-overview_cells.length === 0
-  ? html`<div style="color: #5a6570;">No algorithm reaches recall ${recall_target} on any dataset.</div>`
-  : Plot.plot({
-      style: {fontSize: "9pt"},
-      width: Math.max(780, 34 * overview_datasets.length + 170),
-      marginLeft: 150,
-      marginBottom: 190,
-      marginTop: 8,
-      height: 21 * overview_algorithms.length + 200,
-      x: {domain: overview_datasets, tickRotate: -45, label: null, tickFormat: shortDataset},
-      y: {domain: overview_algorithms, label: null},
-      color: {
-        type: "log", scheme: "blues",
-        label: overview_metric === "ratio"
-          ? "build time ÷ cheapest build on that dataset"
-          : "build time (seconds)"
-      },
-      marks: [
-        Plot.cell(
-          d3.cross(overview_datasets, overview_algorithms).map(([dataset, algorithm]) => ({dataset, algorithm})),
-          {x: "dataset", y: "algorithm", fill: "#f2f2f2", inset: 0.5}
-        ),
-        Plot.cell(overview_cells, {
-          x: "dataset", y: "algorithm", inset: 0.5,
-          fill: d => overview_metric === "ratio" ? d.ratio : d.cheapest_build
-        }),
-        Plot.text(overview_cells, {
-          x: "dataset", y: "algorithm", fontSize: 8,
-          text: d => overview_metric === "ratio"
-            ? (d.ratio < 10 ? d.ratio.toFixed(1) : d3.format(".0f")(d.ratio))
-            : secs(d.cheapest_build),
-          fill: d => (overview_metric === "ratio" ? d.ratio > 8 : d.cheapest_build > 600) ? "white" : "black",
-          title: d => `${d.algorithm}\n${shortDataset(d.dataset)}\n` +
-            `cheapest build reaching recall ${recall_target}: ${secs(d.cheapest_build)}\n` +
-            `${d.ratio.toFixed(1)}× the cheapest builder on this dataset`
-        })
-      ]
-    })
+overviewPlot("build")
 ```
 Rows are ordered by median relative cost, columns by dataset size, so a row that darkens
 to the right scales worse than its neighbours. A grey cell means that algorithm never
@@ -577,3 +595,15 @@ reaches recall ${recall_target} on that dataset with any configuration. Drag the
 slider to watch cells drop out.
 :::
 
+### Row
+
+::: {.card title="Across datasets: the smallest index that reaches this recall"}
+```{ojs}
+overviewPlot("size")
+```
+The same matrix for memory: the smallest index each algorithm can get away with while
+still clearing the recall target, against the smallest any algorithm manages on that
+dataset. Rows are ordered independently of the build-time matrix — an algorithm can be
+cheap on one axis and expensive on the other, and the two orderings differing is the
+finding.
+:::
