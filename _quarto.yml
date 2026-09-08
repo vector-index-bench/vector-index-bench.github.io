@@ -15,6 +15,8 @@ website:
         href: datasets.qmd
       - text: "Tradeoffs"
         href: tradeoff.qmd
+      - text: "Build cost"
+        href: build_cost.qmd
       - text: "Algorithm focus"
         href: algorithm_focus.qmd
       - text: "Robustness"
